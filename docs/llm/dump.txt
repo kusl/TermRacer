@@ -1,8 +1,8 @@
 ===============================================================================
 PROJECT EXPORT
-Generated (UTC): 2026-09-27 20:58:11
+Generated (UTC): 2026-09-27 21:35:08
 Project Path:    /home/kushal/src/dotnet/TermRacer
-Git Commit:      087e4c1a2470edd26b1e373f60b14ebb42a9ae5c
+Git Commit:      a820e22fad011cb912f2981cb76035732c8b637f
 Git Branch:      main
 Git Dirty:       no
 .NET SDK:        10.0.112
@@ -4696,10 +4696,10 @@ public sealed class PixelCanvasTests
 
 ================================================================================
 FILE:     tests/TermRacer.Rendering.Tests/SceneRendererTests.cs
-SIZE:     3.32 KB (3395 bytes)
-LINES:    106
-SHA256:   6258f5203e62a29af8b1bd8fc9ca3f72ce15d4d17f6bdc93bb9587faaab8a2cb
-MODIFIED: 2026-09-27 16:48:10 (UTC)
+SIZE:     3.40 KB (3485 bytes)
+LINES:    105
+SHA256:   16126565b013e22cbe45397896ff4e4dd2b72afc6a44a211617cf7965377d235
+MODIFIED: 2026-09-27 21:33:52 (UTC)
 ================================================================================
 
 using TermRacer.Core;
@@ -4728,10 +4728,9 @@ public sealed class SceneRendererTests
         {
             var buffer = new CellBuffer(SceneRenderer.MinColumns, SceneRenderer.MinRows);
             renderer.Render(candidate, buffer);
-            for (var y = 0; y < buffer.Height; y++)
-            {
-                Assert.DoesNotContain("\0", buffer.RowText(y));
-            }
+            var unpainted = Enumerable.Range(0, buffer.Height)
+                .SelectMany(y => Enumerable.Range(0, buffer.Width).Where(x => buffer[x, y].Glyph == '\0').Select(x => (X: x, Y: y)));
+            Assert.Empty(unpainted);
         }
     }
 
@@ -4863,9 +4862,9 @@ public sealed class TimeFormatTests
 
 
 ===============================================================================
-EXPORT COMPLETED (UTC): 2026-09-27 20:58:12
+EXPORT COMPLETED (UTC): 2026-09-27 21:35:09
 Total Files Exported:   81
-Total Source Size:      0.13 MB (131073 bytes)
+Total Source Size:      0.13 MB (131163 bytes)
 Output File:            /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
 ===============================================================================
-DUMP SHA256 (of all lines above this one): fbd46f3eec0818ca9b5708c5be4295535aac43a521a9a975c516de258b546887
+DUMP SHA256 (of all lines above this one): e0a354bc370b2aae705064259ee788c8c087257e1277a1002c1c2c023b92527a

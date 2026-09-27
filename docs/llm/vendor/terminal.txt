@@ -1,57 +1,47 @@
 kushal@fedora:~/src/dotnet/TermRacer$ cd /home/kushal/src/dotnet/TermRacer; time dotnet format; time dotnet clean; time dotnet build; time dotnet test; git status; time bash export.sh; time dotnet list package; time dotnet list package --outdated; time dotnet run --project src/TermRacer.Tui/TermRacer.Tui.csproj
 
-real	0m6.727s
-user	0m10.434s
-sys	0m1.025s
+real	0m6.228s
+user	0m9.931s
+sys	0m0.951s
 
 Build succeeded in 0.5s
 
-real	0m0.630s
-user	0m0.661s
-sys	0m0.180s
+real	0m0.619s
+user	0m0.670s
+sys	0m0.158s
 Restore complete (0.5s)
-  TermRacer.Core net10.0 succeeded (0.3s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
+  TermRacer.Core net10.0 succeeded (2.4s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
   TermRacer.Rendering net10.0 succeeded (0.3s) → src/TermRacer.Rendering/bin/Debug/net10.0/TermRacer.Rendering.dll
-  TermRacer.Core.Tests net10.0 succeeded (0.4s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
-  TermRacer.Tui net10.0 succeeded (0.4s) → src/TermRacer.Tui/bin/Debug/net10.0/termracer.dll
+  TermRacer.Core.Tests net10.0 succeeded (0.6s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
   TermRacer.Rendering.Tests net10.0 succeeded (0.4s) → tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll
+  TermRacer.Tui net10.0 succeeded (0.4s) → src/TermRacer.Tui/bin/Debug/net10.0/termracer.dll
 
-Build succeeded in 1.7s
+Build succeeded in 3.8s
 
-real	0m1.888s
-user	0m1.679s
-sys	0m0.385s
+real	0m3.970s
+user	0m1.688s
+sys	0m0.393s
 Running tests from tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64)
 Running tests from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
-failed TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell (1s 115ms)
-  from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
-  Assert.DoesNotContain() Failure: Sub-string found
-           ↓ (pos 0)
-  String: "                                                  "···
-  Found:  "\0"
-    at TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell() in tests/TermRacer.Rendering.Tests/SceneRendererTests.cs:29
-    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
-    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
-tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 585ms)
-Exit code: 2
-tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 162ms)
+tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (2s 620ms)
+tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 208ms)
 
-Test run summary: Failed!
-  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 162ms)
-  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 585ms)
+Test run summary: Passed!
+  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (2s 620ms)
+  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 208ms)
 
   total: 92
-  failed: 1
-  succeeded: 91
+  failed: 0
+  succeeded: 92
   skipped: 0
-  duration: 5s 374ms
-Test run completed with non-success exit code: 2 (see: https://aka.ms/testingplatform/exitcodes)
+  duration: 5s 408ms
 
-real	0m6.729s
-user	0m11.327s
-sys	0m0.652s
+real	0m6.666s
+user	0m11.109s
+sys	0m0.633s
 On branch main
-Your branch is up to date with 'origin/main'.
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
 
 nothing to commit, working tree clean
 Starting project export...
@@ -145,12 +135,12 @@ Export completed successfully!
 Output file: /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
 Total source size: 0.13 MB across 81 files
 
-real	0m1.185s
+real	0m1.149s
 user	0m0.594s
-sys	0m0.821s
-Restore complete (0.5s)
+sys	0m0.779s
+Restore complete (0.4s)
 
-Build succeeded in 0.6s
+Build succeeded in 0.5s
 Project 'TermRacer.Core' has the following package references
    [net10.0]: No packages were found for this framework.
 Project 'TermRacer.Rendering' has the following package references
@@ -171,9 +161,9 @@ Project 'TermRacer.Rendering.Tests' has the following package references
    > xunit.v3             4.0.1       4.0.1   
 
 
-real	0m1.798s
-user	0m1.811s
-sys	0m0.412s
+real	0m1.597s
+user	0m1.584s
+sys	0m0.378s
 Restore complete (0.5s)
 
 Build succeeded in 0.6s
@@ -187,11 +177,11 @@ The given project `TermRacer.Tui` has no updates given the current sources.
 The given project `TermRacer.Core.Tests` has no updates given the current sources.
 The given project `TermRacer.Rendering.Tests` has no updates given the current sources.
 
-real	0m1.915s
-user	0m1.939s
-sys	0m0.407s
+real	0m3.599s
+user	0m2.386s
+sys	0m0.448s
 
-real	2m20.182s
-user	0m24.923s
-sys	0m2.503s
+real	12m2.064s
+user	2m37.773s
+sys	0m25.430s
 kushal@fedora:~/src/dotnet/TermRacer$ 
