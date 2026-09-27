@@ -24,10 +24,9 @@ public sealed class SceneRendererTests
         {
             var buffer = new CellBuffer(SceneRenderer.MinColumns, SceneRenderer.MinRows);
             renderer.Render(candidate, buffer);
-            for (var y = 0; y < buffer.Height; y++)
-            {
-                Assert.DoesNotContain("\0", buffer.RowText(y));
-            }
+            var unpainted = Enumerable.Range(0, buffer.Height)
+                .SelectMany(y => Enumerable.Range(0, buffer.Width).Where(x => buffer[x, y].Glyph == '\0').Select(x => (X: x, Y: y)));
+            Assert.Empty(unpainted);
         }
     }
 
