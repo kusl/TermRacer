@@ -1,14 +1,14 @@
-kushal@fedora:~/src/dotnet/TermRacer$ cd /home/kushal/src/dotnet/TermRacer; time dotnet format; time dotnet clean; time dotnet build; time dotnet test; git status; time bash export.sh; time dotnet list package; time dotnet list package --outdated; time dotnet run --project TermRacer.Tui/TermRacer.Tui.csproj
+kushal@fedora:~/src/dotnet/TermRacer$ cd /home/kushal/src/dotnet/TermRacer; time dotnet format; time dotnet clean; time dotnet build; time dotnet test; git status; time bash export.sh; time dotnet list package; time dotnet list package --outdated; time dotnet run --project src/TermRacer.Tui/TermRacer.Tui.csproj
 
-real	0m5.783s
-user	0m9.247s
-sys	0m0.869s
+real	0m6.031s
+user	0m9.449s
+sys	0m0.873s
 
 Build succeeded in 0.4s
 
-real	0m0.587s
-user	0m0.634s
-sys	0m0.166s
+real	0m0.592s
+user	0m0.656s
+sys	0m0.137s
 Restore complete (0.5s)
   TermRacer.Core net10.0 succeeded (0.3s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
   TermRacer.Rendering net10.0 succeeded (0.3s) → src/TermRacer.Rendering/bin/Debug/net10.0/TermRacer.Rendering.dll
@@ -18,12 +18,12 @@ Restore complete (0.5s)
 
 Build succeeded in 1.6s
 
-real	0m1.732s
-user	0m1.456s
-sys	0m0.352s
+real	0m1.763s
+user	0m1.453s
+sys	0m0.412s
 Running tests from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
 Running tests from tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64)
-failed TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell (1s 123ms)
+failed TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell (1s 090ms)
   from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
   Assert.DoesNotContain() Failure: Sub-string found
            ↓ (pos 0)
@@ -32,24 +32,24 @@ failed TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell (
     at TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell() in tests/TermRacer.Rendering.Tests/SceneRendererTests.cs:29
     at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
     at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
-tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 538ms)
+tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 531ms)
 Exit code: 2
-tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 978ms)
+tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 027ms)
 
 Test run summary: Failed!
-  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 538ms)
-  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 978ms)
+  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 027ms)
+  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 531ms)
 
   total: 92
   failed: 1
   succeeded: 91
   skipped: 0
-  duration: 5s 167ms
+  duration: 5s 216ms
 Test run completed with non-success exit code: 2 (see: https://aka.ms/testingplatform/exitcodes)
 
-real	0m6.393s
-user	0m10.728s
-sys	0m0.577s
+real	0m6.446s
+user	0m10.782s
+sys	0m0.608s
 On branch main
 nothing to commit, working tree clean
 Starting project export...
@@ -143,9 +143,9 @@ Export completed successfully!
 Output file: /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
 Total source size: 0.13 MB across 81 files
 
-real	0m1.118s
-user	0m0.562s
-sys	0m0.769s
+real	0m1.093s
+user	0m0.596s
+sys	0m0.730s
 Restore complete (0.4s)
 
 Build succeeded in 0.5s
@@ -169,9 +169,9 @@ Project 'TermRacer.Rendering.Tests' has the following package references
    > xunit.v3             4.0.1       4.0.1   
 
 
-real	0m1.505s
-user	0m1.558s
-sys	0m0.341s
+real	0m1.485s
+user	0m1.510s
+sys	0m0.352s
 Restore complete (0.4s)
 
 Build succeeded in 0.5s
@@ -185,12 +185,11 @@ The given project `TermRacer.Tui` has no updates given the current sources.
 The given project `TermRacer.Core.Tests` has no updates given the current sources.
 The given project `TermRacer.Rendering.Tests` has no updates given the current sources.
 
-real	0m1.600s
-user	0m1.625s
-sys	0m0.338s
-The provided file path does not exist: TermRacer.Tui/TermRacer.Tui.csproj.
+real	0m1.617s
+user	0m1.650s
+sys	0m0.367s
 
-real	0m0.094s
-user	0m0.075s
-sys	0m0.018s
+real	1m0.293s
+user	0m13.528s
+sys	0m1.279s
 kushal@fedora:~/src/dotnet/TermRacer$ 
