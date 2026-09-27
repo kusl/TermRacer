@@ -1,49 +1,54 @@
 kushal@fedora:~/src/dotnet/TermRacer$ cd /home/kushal/src/dotnet/TermRacer; time dotnet format; time dotnet clean; time dotnet build; time dotnet test; git status; time bash export.sh; time dotnet list package; time dotnet list package --outdated; time dotnet run --project src/TermRacer.Tui/TermRacer.Tui.csproj
 
-real	0m6.228s
-user	0m9.931s
-sys	0m0.951s
+real	0m5.746s
+user	0m9.198s
+sys	0m0.857s
 
-Build succeeded in 0.5s
+Build succeeded in 0.4s
 
-real	0m0.619s
-user	0m0.670s
-sys	0m0.158s
+real	0m0.591s
+user	0m0.645s
+sys	0m0.138s
 Restore complete (0.5s)
-  TermRacer.Core net10.0 succeeded (2.4s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
+  TermRacer.Core net10.0 succeeded (2.2s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
   TermRacer.Rendering net10.0 succeeded (0.3s) → src/TermRacer.Rendering/bin/Debug/net10.0/TermRacer.Rendering.dll
-  TermRacer.Core.Tests net10.0 succeeded (0.6s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
-  TermRacer.Rendering.Tests net10.0 succeeded (0.4s) → tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll
+  TermRacer.Core.Tests net10.0 succeeded (0.5s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
+  TermRacer.Rendering.Tests net10.0 succeeded (0.3s) → tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll
   TermRacer.Tui net10.0 succeeded (0.4s) → src/TermRacer.Tui/bin/Debug/net10.0/termracer.dll
 
-Build succeeded in 3.8s
+Build succeeded in 3.6s
 
-real	0m3.970s
-user	0m1.688s
-sys	0m0.393s
-Running tests from tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64)
+real	0m3.801s
+user	0m1.812s
+sys	0m0.391s
 Running tests from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
-tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (2s 620ms)
-tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 208ms)
+Running tests from tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64)
+tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (2s 492ms)
+tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 987ms)
 
 Test run summary: Passed!
-  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (2s 620ms)
-  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 208ms)
+  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (2s 492ms)
+  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 987ms)
 
   total: 92
   failed: 0
   succeeded: 92
   skipped: 0
-  duration: 5s 408ms
+  duration: 5s 184ms
 
-real	0m6.666s
-user	0m11.109s
-sys	0m0.633s
+real	0m6.365s
+user	0m10.550s
+sys	0m0.594s
 On branch main
-Your branch is ahead of 'origin/main' by 1 commit.
-  (use "git push" to publish your local commits)
+Your branch is up to date with 'origin/main'.
 
-nothing to commit, working tree clean
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    docs/llm/vendor/TermRacer.tar.gz
+	deleted:    docs/llm/vendor/termracer.tar.gz
+
+no changes added to commit (use "git add" and/or "git commit -a")
 Starting project export...
 Project Path: /home/kushal/src/dotnet/TermRacer
 Output File:  /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
@@ -135,9 +140,9 @@ Export completed successfully!
 Output file: /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
 Total source size: 0.13 MB across 81 files
 
-real	0m1.149s
-user	0m0.594s
-sys	0m0.779s
+real	0m1.096s
+user	0m0.561s
+sys	0m0.765s
 Restore complete (0.4s)
 
 Build succeeded in 0.5s
@@ -161,12 +166,12 @@ Project 'TermRacer.Rendering.Tests' has the following package references
    > xunit.v3             4.0.1       4.0.1   
 
 
-real	0m1.597s
-user	0m1.584s
-sys	0m0.378s
-Restore complete (0.5s)
+real	0m1.521s
+user	0m1.489s
+sys	0m0.372s
+Restore complete (0.4s)
 
-Build succeeded in 0.6s
+Build succeeded in 0.5s
 
 The following sources were used:
    https://api.nuget.org/v3/index.json
@@ -177,11 +182,11 @@ The given project `TermRacer.Tui` has no updates given the current sources.
 The given project `TermRacer.Core.Tests` has no updates given the current sources.
 The given project `TermRacer.Rendering.Tests` has no updates given the current sources.
 
-real	0m3.599s
-user	0m2.386s
-sys	0m0.448s
+real	0m1.644s
+user	0m1.673s
+sys	0m0.346s
 
-real	12m2.064s
-user	2m37.773s
-sys	0m25.430s
+real	0m22.915s
+user	0m7.482s
+sys	0m0.519s
 kushal@fedora:~/src/dotnet/TermRacer$ 

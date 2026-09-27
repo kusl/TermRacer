@@ -1,10 +1,10 @@
 ===============================================================================
 PROJECT EXPORT
-Generated (UTC): 2026-09-27 21:35:08
+Generated (UTC): 2026-09-27 21:51:46
 Project Path:    /home/kushal/src/dotnet/TermRacer
-Git Commit:      a820e22fad011cb912f2981cb76035732c8b637f
+Git Commit:      29169b45ae7651feb11432953d1bb120c9a3ddd1
 Git Branch:      main
-Git Dirty:       no
+Git Dirty:       yes (uncommitted changes are included below)
 .NET SDK:        10.0.112
 Files Exported:  81
 ===============================================================================
@@ -4862,9 +4862,9 @@ public sealed class TimeFormatTests
 
 
 ===============================================================================
-EXPORT COMPLETED (UTC): 2026-09-27 21:35:09
+EXPORT COMPLETED (UTC): 2026-09-27 21:51:47
 Total Files Exported:   81
 Total Source Size:      0.13 MB (131163 bytes)
 Output File:            /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
 ===============================================================================
-DUMP SHA256 (of all lines above this one): e0a354bc370b2aae705064259ee788c8c087257e1277a1002c1c2c023b92527a
+DUMP SHA256 (of all lines above this one): cdf2de9ebe8c5e67b07c250e4d8e0e5d02805979db96bb66397f34ed33dc6efc
