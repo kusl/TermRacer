@@ -1,0 +1,263 @@
+kushal@fedora:~/src/dotnet/TermRacer$ git status
+fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+kushal@fedora:~/src/dotnet/TermRacer$ git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /home/kushal/src/dotnet/TermRacer/.git/
+kushal@fedora:~/src/dotnet/TermRacer$ git branch -m main
+kushal@fedora:~/src/dotnet/TermRacer$ git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.gitignore
+	Directory.Build.props
+	Directory.Packages.props
+	README.md
+	TermRacer.slnx
+	docs/
+	global.json
+	src/
+	tests/
+
+nothing added to commit but untracked files present (use "git add" to track)
+kushal@fedora:~/src/dotnet/TermRacer$ git add .
+kushal@fedora:~/src/dotnet/TermRacer$ git commit
+[main (root-commit) 7ca74dc] add claude response
+ 80 files changed, 3699 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 Directory.Build.props
+ create mode 100644 Directory.Packages.props
+ create mode 100644 README.md
+ create mode 100644 TermRacer.slnx
+ create mode 100644 docs/architecture.md
+ create mode 100644 global.json
+ create mode 100644 src/TermRacer.Core/Autopilot.cs
+ create mode 100644 src/TermRacer.Core/CarPhysics.cs
+ create mode 100644 src/TermRacer.Core/CarSpec.cs
+ create mode 100644 src/TermRacer.Core/CarState.cs
+ create mode 100644 src/TermRacer.Core/Circuits.cs
+ create mode 100644 src/TermRacer.Core/ControlInput.cs
+ create mode 100644 src/TermRacer.Core/DriveControl.cs
+ create mode 100644 src/TermRacer.Core/DriverControls.cs
+ create mode 100644 src/TermRacer.Core/FixedStepClock.cs
+ create mode 100644 src/TermRacer.Core/Game.cs
+ create mode 100644 src/TermRacer.Core/GameKey.cs
+ create mode 100644 src/TermRacer.Core/GameScreen.cs
+ create mode 100644 src/TermRacer.Core/Gate.cs
+ create mode 100644 src/TermRacer.Core/Geometry.cs
+ create mode 100644 src/TermRacer.Core/LapEvent.cs
+ create mode 100644 src/TermRacer.Core/LapTracker.cs
+ create mode 100644 src/TermRacer.Core/Pose.cs
+ create mode 100644 src/TermRacer.Core/RaceMode.cs
+ create mode 100644 src/TermRacer.Core/RacePhase.cs
+ create mode 100644 src/TermRacer.Core/RaceSession.cs
+ create mode 100644 src/TermRacer.Core/RacingLine.cs
+ create mode 100644 src/TermRacer.Core/SpeedProfile.cs
+ create mode 100644 src/TermRacer.Core/Surface.cs
+ create mode 100644 src/TermRacer.Core/TermRacer.Core.csproj
+ create mode 100644 src/TermRacer.Core/Track.cs
+ create mode 100644 src/TermRacer.Core/TrackDefinition.cs
+ create mode 100644 src/TermRacer.Core/TrackProjection.cs
+ create mode 100644 src/TermRacer.Core/TrackSection.cs
+ create mode 100644 src/TermRacer.Core/Vec2.cs
+ create mode 100644 src/TermRacer.Core/Walls.cs
+ create mode 100644 src/TermRacer.Rendering/Camera.cs
+ create mode 100644 src/TermRacer.Rendering/Cell.cs
+ create mode 100644 src/TermRacer.Rendering/CellBuffer.cs
+ create mode 100644 src/TermRacer.Rendering/CellRun.cs
+ create mode 100644 src/TermRacer.Rendering/ChaseCamera.cs
+ create mode 100644 src/TermRacer.Rendering/FrameDiff.cs
+ create mode 100644 src/TermRacer.Rendering/Hud.cs
+ create mode 100644 src/TermRacer.Rendering/Palette.cs
+ create mode 100644 src/TermRacer.Rendering/PixelCanvas.cs
+ create mode 100644 src/TermRacer.Rendering/PixelFont.cs
+ create mode 100644 src/TermRacer.Rendering/Rgb.cs
+ create mode 100644 src/TermRacer.Rendering/SceneRenderer.cs
+ create mode 100644 src/TermRacer.Rendering/TermRacer.Rendering.csproj
+ create mode 100644 src/TermRacer.Rendering/TimeFormat.cs
+ create mode 100644 src/TermRacer.Rendering/TrackGeometry.cs
+ create mode 100644 src/TermRacer.Rendering/WorldPainter.cs
+ create mode 100644 src/TermRacer.Rendering/WorldQuad.cs
+ create mode 100644 src/TermRacer.Tui/GameView.cs
+ create mode 100644 src/TermRacer.Tui/KeyMap.cs
+ create mode 100644 src/TermRacer.Tui/Program.cs
+ create mode 100644 src/TermRacer.Tui/TermRacer.Tui.csproj
+ create mode 100644 src/TermRacer.Tui/TerminalColors.cs
+ create mode 100644 tests/TermRacer.Core.Tests/AutopilotTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/CarPhysicsTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/DriverControlsTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/FixedStepClockTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/Fixtures.cs
+ create mode 100644 tests/TermRacer.Core.Tests/GameTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/GeometryTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/LapTrackerTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/RacingLineTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/TermRacer.Core.Tests.csproj
+ create mode 100644 tests/TermRacer.Core.Tests/TrackTests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/Vec2Tests.cs
+ create mode 100644 tests/TermRacer.Core.Tests/WallsTests.cs
+ create mode 100644 tests/TermRacer.Rendering.Tests/CameraTests.cs
+ create mode 100644 tests/TermRacer.Rendering.Tests/CellBufferTests.cs
+ create mode 100644 tests/TermRacer.Rendering.Tests/Fixtures.cs
+ create mode 100644 tests/TermRacer.Rendering.Tests/FrameDiffTests.cs
+ create mode 100644 tests/TermRacer.Rendering.Tests/PixelCanvasTests.cs
+ create mode 100644 tests/TermRacer.Rendering.Tests/SceneRendererTests.cs
+ create mode 100644 tests/TermRacer.Rendering.Tests/TermRacer.Rendering.Tests.csproj
+ create mode 100644 tests/TermRacer.Rendering.Tests/TimeFormatTests.cs
+kushal@fedora:~/src/dotnet/TermRacer$ git status
+On branch main
+nothing to commit, working tree clean
+kushal@fedora:~/src/dotnet/TermRacer$ time dotnet build
+Restore complete (2.2s)
+  TermRacer.Core net10.0 succeeded (2.2s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
+  TermRacer.Rendering net10.0 succeeded (0.4s) → src/TermRacer.Rendering/bin/Debug/net10.0/TermRacer.Rendering.dll
+  TermRacer.Core.Tests net10.0 succeeded (0.6s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
+  TermRacer.Rendering.Tests net10.0 succeeded (0.4s) → tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll
+  TermRacer.Tui net10.0 succeeded (0.4s) → src/TermRacer.Tui/bin/Debug/net10.0/termracer.dll
+
+Build succeeded in 5.3s
+
+real	0m5.576s
+user	0m4.414s
+sys	0m0.705s
+kushal@fedora:~/src/dotnet/TermRacer$ time dotnet test
+Running tests from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
+Running tests from tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64)
+failed TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell (1s 006ms)
+  from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
+  Assert.DoesNotContain() Failure: Sub-string found
+           ↓ (pos 0)
+  String: "                                                  "···
+  Found:  "\0"
+    at TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell() in tests/TermRacer.Rendering.Tests/SceneRendererTests.cs:29
+    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 382ms)
+Exit code: 2
+tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 779ms)
+
+Test run summary: Failed!
+  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 382ms)
+  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 779ms)
+
+  total: 92
+  failed: 1
+  succeeded: 91
+  skipped: 0
+  duration: 4s 967ms
+Test run completed with non-success exit code: 2 (see: https://aka.ms/testingplatform/exitcodes)
+
+real	0m6.093s
+user	0m10.121s
+sys	0m0.542s
+kushal@fedora:~/src/dotnet/TermRacer$ time bash export.sh 
+Starting project export...
+Project Path: /home/kushal/src/dotnet/TermRacer
+Output File:  /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
+Listing files via git...
+Found 81 files to export
+Processing (1/81): .gitignore
+Processing (2/81): Directory.Build.props
+Processing (3/81): Directory.Packages.props
+Processing (4/81): README.md
+Processing (5/81): TermRacer.slnx
+Processing (6/81): docs/architecture.md
+Processing (7/81): export.sh
+Processing (8/81): global.json
+Processing (9/81): src/TermRacer.Core/Autopilot.cs
+Processing (10/81): src/TermRacer.Core/CarPhysics.cs
+Processing (11/81): src/TermRacer.Core/CarSpec.cs
+Processing (12/81): src/TermRacer.Core/CarState.cs
+Processing (13/81): src/TermRacer.Core/Circuits.cs
+Processing (14/81): src/TermRacer.Core/ControlInput.cs
+Processing (15/81): src/TermRacer.Core/DriveControl.cs
+Processing (16/81): src/TermRacer.Core/DriverControls.cs
+Processing (17/81): src/TermRacer.Core/FixedStepClock.cs
+Processing (18/81): src/TermRacer.Core/Game.cs
+Processing (19/81): src/TermRacer.Core/GameKey.cs
+Processing (20/81): src/TermRacer.Core/GameScreen.cs
+Processing (21/81): src/TermRacer.Core/Gate.cs
+Processing (22/81): src/TermRacer.Core/Geometry.cs
+Processing (23/81): src/TermRacer.Core/LapEvent.cs
+Processing (24/81): src/TermRacer.Core/LapTracker.cs
+Processing (25/81): src/TermRacer.Core/Pose.cs
+Processing (26/81): src/TermRacer.Core/RaceMode.cs
+Processing (27/81): src/TermRacer.Core/RacePhase.cs
+Processing (28/81): src/TermRacer.Core/RaceSession.cs
+Processing (29/81): src/TermRacer.Core/RacingLine.cs
+Processing (30/81): src/TermRacer.Core/SpeedProfile.cs
+Processing (31/81): src/TermRacer.Core/Surface.cs
+Processing (32/81): src/TermRacer.Core/TermRacer.Core.csproj
+Processing (33/81): src/TermRacer.Core/Track.cs
+Processing (34/81): src/TermRacer.Core/TrackDefinition.cs
+Processing (35/81): src/TermRacer.Core/TrackProjection.cs
+Processing (36/81): src/TermRacer.Core/TrackSection.cs
+Processing (37/81): src/TermRacer.Core/Vec2.cs
+Processing (38/81): src/TermRacer.Core/Walls.cs
+Processing (39/81): src/TermRacer.Rendering/Camera.cs
+Processing (40/81): src/TermRacer.Rendering/Cell.cs
+Processing (41/81): src/TermRacer.Rendering/CellBuffer.cs
+Processing (42/81): src/TermRacer.Rendering/CellRun.cs
+Processing (43/81): src/TermRacer.Rendering/ChaseCamera.cs
+Processing (44/81): src/TermRacer.Rendering/FrameDiff.cs
+Processing (45/81): src/TermRacer.Rendering/Hud.cs
+Processing (46/81): src/TermRacer.Rendering/Palette.cs
+Processing (47/81): src/TermRacer.Rendering/PixelCanvas.cs
+Processing (48/81): src/TermRacer.Rendering/PixelFont.cs
+Processing (49/81): src/TermRacer.Rendering/Rgb.cs
+Processing (50/81): src/TermRacer.Rendering/SceneRenderer.cs
+Processing (51/81): src/TermRacer.Rendering/TermRacer.Rendering.csproj
+Processing (52/81): src/TermRacer.Rendering/TimeFormat.cs
+Processing (53/81): src/TermRacer.Rendering/TrackGeometry.cs
+Processing (54/81): src/TermRacer.Rendering/WorldPainter.cs
+Processing (55/81): src/TermRacer.Rendering/WorldQuad.cs
+Processing (56/81): src/TermRacer.Tui/GameView.cs
+Processing (57/81): src/TermRacer.Tui/KeyMap.cs
+Processing (58/81): src/TermRacer.Tui/Program.cs
+Processing (59/81): src/TermRacer.Tui/TermRacer.Tui.csproj
+Processing (60/81): src/TermRacer.Tui/TerminalColors.cs
+Processing (61/81): tests/TermRacer.Core.Tests/AutopilotTests.cs
+Processing (62/81): tests/TermRacer.Core.Tests/CarPhysicsTests.cs
+Processing (63/81): tests/TermRacer.Core.Tests/DriverControlsTests.cs
+Processing (64/81): tests/TermRacer.Core.Tests/FixedStepClockTests.cs
+Processing (65/81): tests/TermRacer.Core.Tests/Fixtures.cs
+Processing (66/81): tests/TermRacer.Core.Tests/GameTests.cs
+Processing (67/81): tests/TermRacer.Core.Tests/GeometryTests.cs
+Processing (68/81): tests/TermRacer.Core.Tests/LapTrackerTests.cs
+Processing (69/81): tests/TermRacer.Core.Tests/RacingLineTests.cs
+Processing (70/81): tests/TermRacer.Core.Tests/TermRacer.Core.Tests.csproj
+Processing (71/81): tests/TermRacer.Core.Tests/TrackTests.cs
+Processing (72/81): tests/TermRacer.Core.Tests/Vec2Tests.cs
+Processing (73/81): tests/TermRacer.Core.Tests/WallsTests.cs
+Processing (74/81): tests/TermRacer.Rendering.Tests/CameraTests.cs
+Processing (75/81): tests/TermRacer.Rendering.Tests/CellBufferTests.cs
+Processing (76/81): tests/TermRacer.Rendering.Tests/Fixtures.cs
+Processing (77/81): tests/TermRacer.Rendering.Tests/FrameDiffTests.cs
+Processing (78/81): tests/TermRacer.Rendering.Tests/PixelCanvasTests.cs
+Processing (79/81): tests/TermRacer.Rendering.Tests/SceneRendererTests.cs
+Processing (80/81): tests/TermRacer.Rendering.Tests/TermRacer.Rendering.Tests.csproj
+Processing (81/81): tests/TermRacer.Rendering.Tests/TimeFormatTests.cs
+
+Export completed successfully!
+Output file: /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
+Total source size: 0.13 MB across 81 files
+
+real	0m1.136s
+user	0m0.583s
+sys	0m0.735s
+kushal@fedora:~/src/dotnet/TermRacer$ 

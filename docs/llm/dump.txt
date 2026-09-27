@@ -1,0 +1,4871 @@
+===============================================================================
+PROJECT EXPORT
+Generated (UTC): 2026-09-27 20:47:35
+Project Path:    /home/kushal/src/dotnet/TermRacer
+Git Commit:      50277ba14cadae44c952240395830a06ff60a775
+Git Branch:      main
+Git Dirty:       no
+.NET SDK:        10.0.112
+Files Exported:  81
+===============================================================================
+
+DIRECTORY STRUCTURE (exported files only):
+==========================================
+
+.
+    .gitignore
+    Directory.Build.props
+    Directory.Packages.props
+    README.md
+    TermRacer.slnx
+    docs/
+        architecture.md
+    export.sh
+    global.json
+    src/
+        TermRacer.Core/
+            Autopilot.cs
+            CarPhysics.cs
+            CarSpec.cs
+            CarState.cs
+            Circuits.cs
+            ControlInput.cs
+            DriveControl.cs
+            DriverControls.cs
+            FixedStepClock.cs
+            Game.cs
+            GameKey.cs
+            GameScreen.cs
+            Gate.cs
+            Geometry.cs
+            LapEvent.cs
+            LapTracker.cs
+            Pose.cs
+            RaceMode.cs
+            RacePhase.cs
+            RaceSession.cs
+            RacingLine.cs
+            SpeedProfile.cs
+            Surface.cs
+            TermRacer.Core.csproj
+            Track.cs
+            TrackDefinition.cs
+            TrackProjection.cs
+            TrackSection.cs
+            Vec2.cs
+            Walls.cs
+        TermRacer.Rendering/
+            Camera.cs
+            Cell.cs
+            CellBuffer.cs
+            CellRun.cs
+            ChaseCamera.cs
+            FrameDiff.cs
+            Hud.cs
+            Palette.cs
+            PixelCanvas.cs
+            PixelFont.cs
+            Rgb.cs
+            SceneRenderer.cs
+            TermRacer.Rendering.csproj
+            TimeFormat.cs
+            TrackGeometry.cs
+            WorldPainter.cs
+            WorldQuad.cs
+        TermRacer.Tui/
+            GameView.cs
+            KeyMap.cs
+            Program.cs
+            TermRacer.Tui.csproj
+            TerminalColors.cs
+    tests/
+        TermRacer.Core.Tests/
+            AutopilotTests.cs
+            CarPhysicsTests.cs
+            DriverControlsTests.cs
+            FixedStepClockTests.cs
+            Fixtures.cs
+            GameTests.cs
+            GeometryTests.cs
+            LapTrackerTests.cs
+            RacingLineTests.cs
+            TermRacer.Core.Tests.csproj
+            TrackTests.cs
+            Vec2Tests.cs
+            WallsTests.cs
+        TermRacer.Rendering.Tests/
+            CameraTests.cs
+            CellBufferTests.cs
+            Fixtures.cs
+            FrameDiffTests.cs
+            PixelCanvasTests.cs
+            SceneRendererTests.cs
+            TermRacer.Rendering.Tests.csproj
+            TimeFormatTests.cs
+
+
+FILE CONTENTS:
+==============
+
+================================================================================
+FILE:     .gitignore
+SIZE:     0.04 KB (42 bytes)
+LINES:    6
+SHA256:   d8bd07ffe6f27b8d546baa7d1b825333cf8e9d1af7d56f32434ae8e4137e7cf9
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+bin/
+obj/
+TestResults/
+.vs/
+.idea/
+*.user
+
+
+================================================================================
+FILE:     Directory.Build.props
+SIZE:     0.25 KB (261 bytes)
+LINES:    9
+SHA256:   d1cedb8cbebd9f0489079e7c6aebc17a62c56b466b455389ff1c1ad997c07b21
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AnalysisLevel>latest</AnalysisLevel>
+  </PropertyGroup>
+</Project>
+
+
+================================================================================
+FILE:     Directory.Packages.props
+SIZE:     0.27 KB (281 bytes)
+LINES:    9
+SHA256:   745b681a56ca1f19581f79443179a1a3f2f502489b6ab9d352ae0a3687c94ff0
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Terminal.Gui" Version="2.5.0" />
+    <PackageVersion Include="xunit.v3" Version="4.0.1" />
+  </ItemGroup>
+</Project>
+
+
+================================================================================
+FILE:     README.md
+SIZE:     2.12 KB (2168 bytes)
+LINES:    52
+SHA256:   d7c145c94c7e30901b0b0def69d67eb127aa9693bdf28e4f6ba6fd42140e76bf
+MODIFIED: 2026-09-27 16:49:12 (UTC)
+================================================================================
+
+# TermRacer
+
+Top-down racing in the terminal. One circuit, a timed lap or endless laps, and an autopilot you can hand the car to at any moment.
+
+## Requirements
+
+- .NET 10 SDK (any 10.0 feature band; see `global.json`)
+- A 24-bit colour terminal of at least 120 × 40 cells. Smaller windows get a resize prompt and the game waits.
+
+## Run and test
+
+```sh
+dotnet run --project src/TermRacer.Tui
+dotnet test
+```
+
+`dotnet test` runs both xUnit v3 suites on Microsoft Testing Platform (enabled in `global.json`). Each test project is also a standalone executable, for example `dotnet run --project tests/TermRacer.Core.Tests`.
+
+## Controls
+
+| Key | Action |
+| --- | --- |
+| ↑ or W | Throttle |
+| ↓ or S | Brake; reverse when stopped |
+| ← → or A D | Steer |
+| Tab | Switch between manual driving and autopilot |
+| Enter or Space | Choose in menus |
+| Esc | Quit immediately |
+
+Terminals that report key releases through the kitty keyboard protocol (kitty, WezTerm, foot, Ghostty, Windows Terminal) get exact hold-to-drive controls. In other terminals the throttle stays on after one press until you brake, and steering lasts as long as key repeats keep arriving.
+
+## Modes
+
+- **Single lap**: one timed lap. The car starts just behind the line, the clock starts when you cross it, and the race ends when you cross it again with every checkpoint passed. The final time is shown until you press Enter or Esc.
+- **Zen mode**: no lap limit. Current, last and best lap times are shown for reference. Leave with Esc.
+
+## Layout
+
+```
+TermRacer.slnx
+global.json                    SDK roll-forward and MTP test runner
+Directory.Build.props          shared compiler settings
+Directory.Packages.props       central package versions
+src/TermRacer.Core             simulation: track, physics, lap rules, autopilot, game flow
+src/TermRacer.Rendering        rasterizer, cell buffers, frame diff, scene and HUD
+src/TermRacer.Tui              Terminal.Gui shell: input, timer, writing changed cells
+tests/TermRacer.Core.Tests
+tests/TermRacer.Rendering.Tests
+docs/architecture.md
+```
+
+Only `TermRacer.Tui` references Terminal.Gui. See `docs/architecture.md` for how the pieces fit.
+
+
+================================================================================
+FILE:     TermRacer.slnx
+SIZE:     0.45 KB (463 bytes)
+LINES:    11
+SHA256:   77831e25a8b7b18dd8d7d0353ee6490c4e396706bfd41aaec9b0a0204ad9fdc9
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TermRacer.Core/TermRacer.Core.csproj" />
+    <Project Path="src/TermRacer.Rendering/TermRacer.Rendering.csproj" />
+    <Project Path="src/TermRacer.Tui/TermRacer.Tui.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TermRacer.Core.Tests/TermRacer.Core.Tests.csproj" />
+    <Project Path="tests/TermRacer.Rendering.Tests/TermRacer.Rendering.Tests.csproj" />
+  </Folder>
+</Solution>
+
+
+================================================================================
+FILE:     docs/architecture.md
+SIZE:     5.05 KB (5171 bytes)
+LINES:    33
+SHA256:   538bafba7f89e9ca94d6078643cc0b7a275227fd2bcdd3520cf1de371958631a
+MODIFIED: 2026-09-27 16:49:12 (UTC)
+================================================================================
+
+# Architecture
+
+Three projects, one dependency direction: `Tui → Rendering → Core`. Core and Rendering have no package references and are fully covered by the test projects.
+
+## Core
+
+- **Track.** `TrackDefinition` describes a closed loop as straights and constant-radius arcs. `Track.Build` walks the sections, checks closure, and resamples the centreline every 2 m, storing tangents, right-hand normals and signed curvature (positive turns right; world y points down). Asphalt is 14 m wide, and walls sit 16 m from the centreline. The tests check that the tightest radius is wider than the runoff and that separate parts of the loop never share runoff.
+- **Physics.** `CarPhysics.Step` is a fixed-step (120 Hz) arcade model. It has a power-limited engine, aero drag and rolling resistance, brakes that turn into reverse at standstill, and steering that asks for a share of the largest yaw rate the tyres allow at the current speed. Lateral acceleration therefore never exceeds grip. Grass lowers grip and power and adds drag. `Walls` clamps the car to the corridor and reflects outward velocity.
+- **Race rules.** `LapTracker` uses 12 gates across the corridor. Gate 0 is the start/finish line. The clock starts on the first forward crossing of gate 0. A lap counts only when gates 1 to 11 are crossed forward in order and the line is crossed again. Crossing times are interpolated inside the simulation step. Single-lap mode finishes on the first completed lap; Zen mode keeps counting.
+- **Autopilot.** `RacingLine` relaxes lateral offsets towards minimum curvature within the track (coarse pass, then full resolution). `SpeedProfile` takes corner speeds from curvature and grip, then runs a backward pass so every corner can be reached under braking. `Autopilot` combines pure-pursuit steering with a speed controller, eases off on grass or when pointing away from the line, and reverses out when stuck.
+- **Input.** `DriverControls` turns key events into pedal and steering input. It starts in repeat-driven mode: throttle latches, while brake and steering hold for 0.55 s after a press and 0.16 s after each repeat. After the first key release event it switches to exact press and release tracking.
+- **Flow.** `Game` owns the screens (menu, race, results), the menu's autopilot demo lap, pausing, debounce for Tab and Enter, and a `FixedStepClock` that turns wall time into simulation steps (clamped after stalls).
+
+## Rendering
+
+- **Rasterizing.** `PixelCanvas` fills polygons with a scanline pass that samples pixel centres. Shared edges are evaluated in a canonical order, so neighbouring quads tile without gaps. Each canvas row pair becomes one terminal cell: `▀` with the top pixel as foreground and the bottom as background, or a space when both match. That gives roughly square pixels at twice the vertical resolution.
+- **Track geometry.** `TrackGeometry` precomputes world-space quads for runoff stripes, barriers, asphalt, curbs (where the radius is under 160 m) and the chequered line. `WorldPainter` culls them against the camera and draws the track, the car (body, nose, cabin, shadow) and the minimap.
+- **Camera.** `ChaseCamera` leads the car along its velocity, eases towards that target in simulation time, and snaps to the pixel grid so static scenery does not shimmer.
+- **Scene.** `SceneRenderer` builds the whole frame into a `CellBuffer`: menu with a live track preview, race with HUD bars and banners, results panel with pixel-font digits, or the too-small prompt. Rendering is deterministic for a given state.
+- **Diffing.** `FrameDiff` compares the new buffer with the previous frame and returns runs of changed cells.
+
+## Terminal shell
+
+`GameView` is a Terminal.Gui 2.5 `Runnable`. The app is created with the ANSI driver and 16-colour forcing turned off, and the main loop is raised to 60 iterations per second.
+
+- **Tick.** A 15 ms timeout feeds elapsed wall time to `Game`, pauses the game while the view is under 120 × 40, and requests a redraw.
+- **Drawing.** `OnClearingViewport` is overridden so Terminal.Gui never clears the view. `OnDrawingContent` renders into the back buffer, diffs it against the front buffer, and writes only the changed runs with `Move`, `SetAttribute` and `AddRune`, then swaps the buffers. A full redraw happens only on the first frame, on a resize (`ScreenChanged`), or when the driver clears its contents (`ClearedContents`).
+- **Input.** `KeyMap` maps arrows, WASD, Tab, Enter, Space and Esc to `GameKey`. Key-down events are sent to `Game.Press`, and key-up events (kitty protocol only) to `Game.Release`. Esc requests stop immediately.
+
+## Tests
+
+- **Core tests** cover vector maths, segment intersection, track building and its invariants, physics limits, walls, lap rules (interpolated start, backward crossings, skipped checkpoints, Zen counting), control latching, the fixed-step clock, the racing line and speed profile, autopilot laps (clean laps, single-lap finish, recovery from facing backwards on grass) and game flow.
+- **Rendering tests** cover polygon coverage and tiling, half-block composition, frame diffs, cameras, time formatting and full-scene rendering on every screen.
+
+
+================================================================================
+FILE:     export.sh
+SIZE:     7.32 KB (7498 bytes)
+LINES:    246
+SHA256:   7783f2d68c2576c85e6b1451b368b50901a6c4607affd7fa0b33e3dbeea0a298
+MODIFIED: 2026-09-27 20:47:14 (UTC)
+================================================================================
+
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+PROJECT_PATH="${1:-$SCRIPT_DIR}"
+OUTPUT_FILE="${2:-docs/llm/dump.txt}"
+
+INCLUDE_EXTENSIONS="cs csproj sln slnx props targets json xml config editorconfig cshtml razor js css scss html yml yaml sql sh md"
+INCLUDE_NAMES=".gitignore .gitattributes .editorconfig Dockerfile LICENSE README"
+EXCLUDE_DIRS="bin obj .vs .git node_modules packages .vscode .idea TestResults"
+
+PROJECT_PATH="$(cd "$PROJECT_PATH" && pwd)"
+cd "$PROJECT_PATH"
+
+case "$OUTPUT_FILE" in
+    /*) OUTPUT_PATH="$OUTPUT_FILE" ;;
+    *)  OUTPUT_PATH="$PROJECT_PATH/$OUTPUT_FILE" ;;
+esac
+OUTPUT_DIR="$(dirname "$OUTPUT_PATH")"
+mkdir -p "$OUTPUT_DIR"
+
+OUTPUT_REL="${OUTPUT_PATH#"$PROJECT_PATH"/}"
+
+if [ -t 1 ]; then
+    GREEN='\033[0;32m'; YELLOW='\033[0;33m'; CYAN='\033[0;36m'; NC='\033[0m'
+else
+    GREEN=''; YELLOW=''; CYAN=''; NC=''
+fi
+log() { printf "%b%s%b\n" "$1" "$2" "$NC"; }
+
+sha256_of() {
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256sum "$1" | awk '{print $1}'
+    elif command -v shasum >/dev/null 2>&1; then
+        shasum -a 256 "$1" | awk '{print $1}'
+    else
+        printf 'unavailable'
+    fi
+}
+
+mod_time_utc_of() {
+    local epoch
+    if epoch="$(stat -c '%Y' "$1" 2>/dev/null)"; then
+        date -u -d "@$epoch" '+%Y-%m-%d %H:%M:%S'
+    else
+        epoch="$(stat -f '%m' "$1")"
+        date -u -r "$epoch" '+%Y-%m-%d %H:%M:%S'
+    fi
+}
+
+line_count_of() {
+    awk 'END { print NR }' "$1"
+}
+
+is_included_file() {
+    local name="${1##*/}" ext inc
+    for inc in $INCLUDE_NAMES; do
+        [ "$name" = "$inc" ] && return 0
+    done
+    ext="${name##*.}"
+    [ "$ext" != "$name" ] || return 1
+    ext="$(printf '%s' "$ext" | tr '[:upper:]' '[:lower:]')"
+    for inc in $INCLUDE_EXTENSIONS; do
+        [ "$ext" = "$inc" ] && return 0
+    done
+    return 1
+}
+
+is_in_excluded_dir() {
+    local path="$1" dir
+    for dir in $EXCLUDE_DIRS; do
+        case "$path" in
+            "$dir"/*|*/"$dir"/*) return 0 ;;
+        esac
+    done
+    return 1
+}
+
+in_git_repo() { git rev-parse --is-inside-work-tree >/dev/null 2>&1; }
+
+render_tree() {
+    local -a parts prev
+    local rel n common i j indent
+    prev=()
+    echo "."
+    while IFS= read -r -d '' rel; do
+        IFS='/' read -r -d '' -a parts < <(printf '%s\0' "$rel") || true
+        n=${#parts[@]}
+
+        common=0
+        while [ "$common" -lt $((n - 1)) ] && [ "$common" -lt "${#prev[@]}" ] \
+              && [ "${parts[$common]}" = "${prev[$common]}" ]; do
+            common=$((common + 1))
+        done
+
+        for ((i = common; i < n; i++)); do
+            indent="    "
+            for ((j = 0; j < i; j++)); do indent="$indent    "; done
+            if [ "$i" -lt $((n - 1)) ]; then
+                printf '%s%s/\n' "$indent" "${parts[$i]}"
+            else
+                printf '%s%s\n' "$indent" "${parts[$i]}"
+            fi
+        done
+
+        if [ "$n" -gt 1 ]; then
+            prev=("${parts[@]:0:$((n - 1))}")
+        else
+            prev=()
+        fi
+    done < "$FILE_LIST"
+}
+
+log "$GREEN" "Starting project export..."
+log "$YELLOW" "Project Path: $PROJECT_PATH"
+log "$YELLOW" "Output File:  $OUTPUT_PATH"
+
+RAW_LIST="$(mktemp)"
+FILE_LIST="$(mktemp)"
+TMP_OUTPUT=""
+cleanup() { rm -f "$RAW_LIST" "$FILE_LIST" ${TMP_OUTPUT:+"$TMP_OUTPUT"}; }
+trap cleanup EXIT
+
+if in_git_repo; then
+    log "$CYAN" "Listing files via git..."
+    git ls-files -z --cached --others --exclude-standard > "$RAW_LIST"
+else
+    log "$YELLOW" "Not a git repo; falling back to find..."
+    find . -type f -print0 > "$RAW_LIST"
+fi
+
+while IFS= read -r -d '' file; do
+    rel="${file#./}"
+    [ "$rel" = "$OUTPUT_REL" ] && continue
+    is_in_excluded_dir "$rel" && continue
+    is_included_file "$rel" || continue
+    [ -f "$rel" ] || continue
+    printf '%s\0' "$rel"
+done < "$RAW_LIST" | LC_ALL=C sort -z -u > "$FILE_LIST"
+
+FILE_COUNT=0
+while IFS= read -r -d '' _; do FILE_COUNT=$((FILE_COUNT + 1)); done < "$FILE_LIST"
+log "$GREEN" "Found $FILE_COUNT files to export"
+
+GIT_COMMIT="n/a"; GIT_BRANCH="n/a"; GIT_DIRTY="n/a"
+if in_git_repo; then
+    commit="$(git rev-parse --verify --quiet HEAD 2>/dev/null || true)"
+    [ -n "$commit" ] && GIT_COMMIT="$commit"
+    branch="$(git branch --show-current 2>/dev/null || true)"
+    [ -n "$branch" ] && GIT_BRANCH="$branch"
+
+    status_args=(status --porcelain)
+    case "$OUTPUT_REL" in
+        /*) ;;
+        *)  status_args+=(-- . ":(exclude)$OUTPUT_REL") ;;
+    esac
+    if [ -n "$(git "${status_args[@]}" 2>/dev/null || true)" ]; then
+        GIT_DIRTY="yes (uncommitted changes are included below)"
+    else
+        GIT_DIRTY="no"
+    fi
+fi
+DOTNET_VERSION="$(dotnet --version 2>/dev/null || echo 'not installed')"
+
+TMP_OUTPUT="$(mktemp "$OUTPUT_DIR/.export.XXXXXX")"
+
+{
+    echo "==============================================================================="
+    echo "PROJECT EXPORT"
+    echo "Generated (UTC): $(date -u '+%Y-%m-%d %H:%M:%S')"
+    echo "Project Path:    $PROJECT_PATH"
+    echo "Git Commit:      $GIT_COMMIT"
+    echo "Git Branch:      $GIT_BRANCH"
+    echo "Git Dirty:       $GIT_DIRTY"
+    echo ".NET SDK:        $DOTNET_VERSION"
+    echo "Files Exported:  $FILE_COUNT"
+    echo "==============================================================================="
+    echo
+    echo "DIRECTORY STRUCTURE (exported files only):"
+    echo "=========================================="
+    echo
+    render_tree
+    printf '\n\n'
+    echo "FILE CONTENTS:"
+    echo "=============="
+    echo
+} > "$TMP_OUTPUT"
+
+TOTAL_BYTES=0
+CURRENT=0
+while IFS= read -r -d '' rel; do
+    CURRENT=$((CURRENT + 1))
+    full="$PROJECT_PATH/$rel"
+
+    size="$(wc -c < "$full" | tr -d ' ')"
+    lines="$(line_count_of "$full")"
+    size_kb="$(awk "BEGIN {printf \"%.2f\", $size / 1024}")"
+    hash="$(sha256_of "$full")"
+    modified="$(mod_time_utc_of "$full")"
+    TOTAL_BYTES=$((TOTAL_BYTES + size))
+
+    log "$CYAN" "Processing ($CURRENT/$FILE_COUNT): $rel"
+
+    {
+        echo "================================================================================"
+        echo "FILE:     $rel"
+        echo "SIZE:     ${size_kb} KB (${size} bytes)"
+        echo "LINES:    $lines"
+        echo "SHA256:   $hash"
+        echo "MODIFIED: $modified (UTC)"
+        echo "================================================================================"
+        echo
+    } >> "$TMP_OUTPUT"
+
+    if [ -s "$full" ]; then
+        cat "$full" >> "$TMP_OUTPUT" 2>/dev/null || echo "[ERROR READING FILE]" >> "$TMP_OUTPUT"
+    else
+        echo "[EMPTY FILE]" >> "$TMP_OUTPUT"
+    fi
+
+    printf '\n\n' >> "$TMP_OUTPUT"
+done < "$FILE_LIST"
+
+TOTAL_MB="$(awk "BEGIN {printf \"%.2f\", $TOTAL_BYTES / 1048576}")"
+
+{
+    echo "==============================================================================="
+    echo "EXPORT COMPLETED (UTC): $(date -u '+%Y-%m-%d %H:%M:%S')"
+    echo "Total Files Exported:   $FILE_COUNT"
+    echo "Total Source Size:      ${TOTAL_MB} MB (${TOTAL_BYTES} bytes)"
+    echo "Output File:            $OUTPUT_PATH"
+    echo "==============================================================================="
+} >> "$TMP_OUTPUT"
+
+DUMP_HASH="$(sha256_of "$TMP_OUTPUT")"
+echo "DUMP SHA256 (of all lines above this one): $DUMP_HASH" >> "$TMP_OUTPUT"
+
+chmod 0644 "$TMP_OUTPUT"
+mv -f "$TMP_OUTPUT" "$OUTPUT_PATH"
+TMP_OUTPUT=""
+
+log "$GREEN" ""
+log "$GREEN" "Export completed successfully!"
+log "$YELLOW" "Output file: $OUTPUT_PATH"
+log "$CYAN" "Total source size: ${TOTAL_MB} MB across ${FILE_COUNT} files"
+
+
+================================================================================
+FILE:     global.json
+SIZE:     0.14 KB (141 bytes)
+LINES:    9
+SHA256:   e76756643391c913ede73df24c7bdc3aba3f7936bf61c79d568c01f4be4ff3c1
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+{
+  "sdk": {
+    "version": "10.0.100",
+    "rollForward": "latestFeature"
+  },
+  "test": {
+    "runner": "Microsoft.Testing.Platform"
+  }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Autopilot.cs
+SIZE:     1.86 KB (1909 bytes)
+LINES:    60
+SHA256:   568495a29b262f94c126ef094143145e1816ab26a2a219c7b544683d2c95e6fc
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class Autopilot(RacingLine line, SpeedProfile profile, CarSpec spec)
+{
+    private int index = -1;
+    private double stuckTime;
+    private double reverseTime;
+
+    public void Reset()
+    {
+        index = -1;
+        stuckTime = 0;
+        reverseTime = 0;
+    }
+
+    public ControlInput Drive(in CarState car, Surface surface, double dt)
+    {
+        var (segment, t) = line.Locate(car.Position, index);
+        index = segment;
+        var forward = car.Forward;
+        var speed = car.Velocity.Dot(forward);
+        var lookahead = Math.Clamp(5 + 0.45 * Math.Abs(speed), 7, 26);
+        var target = line.PointAhead(segment, t, lookahead) - car.Position;
+        var alpha = Math.Atan2(target.Dot(forward.Perpendicular), target.Dot(forward));
+
+        if (reverseTime > 0)
+        {
+            reverseTime -= dt;
+            return new ControlInput(0, 1, -Math.Sign(alpha));
+        }
+
+        var magnitude = Math.Max(Math.Abs(speed), 2);
+        var curvature = 2 * Math.Sin(alpha) / Math.Max(target.Length, 1);
+        var steer = Math.Clamp(magnitude * curvature / CarPhysics.MaxYawRate(spec, magnitude, surface), -1, 1);
+
+        var targetSpeed = profile.MinimumAhead(segment, 6 + Math.Abs(speed) * 0.45);
+        if (surface == Surface.Grass)
+        {
+            targetSpeed = Math.Min(targetSpeed, 16);
+        }
+
+        if (Math.Abs(alpha) > 1.0)
+        {
+            targetSpeed = Math.Min(targetSpeed, 9);
+        }
+
+        var error = targetSpeed - speed;
+        var brake = Math.Clamp(-error * 0.4, 0, 1);
+        var throttle = brake > 0.05 ? 0 : Math.Clamp(0.25 + error * 0.9, 0, 1);
+
+        stuckTime = throttle > 0.5 && Math.Abs(speed) < 1 ? stuckTime + dt : 0;
+        if (stuckTime > 1.2)
+        {
+            stuckTime = 0;
+            reverseTime = 1.3;
+        }
+
+        return new ControlInput(throttle, brake, steer);
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/CarPhysics.cs
+SIZE:     2.61 KB (2673 bytes)
+LINES:    64
+SHA256:   5e96df9728dd7f92321e60149bf574a0ffc6d6119c5252a3823dff3c7d6f6189
+MODIFIED: 2026-09-27 16:48:10 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public static class CarPhysics
+{
+    public const double ReverseThreshold = 0.5;
+
+    public static double Grip(CarSpec spec, Surface surface) => surface == Surface.Grass ? spec.GrassGrip : spec.TarmacGrip;
+
+    public static double MaxYawRate(CarSpec spec, double speed, Surface surface)
+    {
+        var magnitude = Math.Abs(speed);
+        return Math.Min(magnitude * Math.Tan(spec.MaxSteerAngle) / spec.Wheelbase, Grip(spec, surface) / Math.Max(magnitude, 0.5));
+    }
+
+    public static CarState Step(in CarState state, in ControlInput input, CarSpec spec, Surface surface, double dt)
+    {
+        var onGrass = surface == Surface.Grass;
+        var grip = Grip(spec, surface);
+        var forward = state.Forward;
+        var forwardSpeed = state.Velocity.Dot(forward);
+        var lateralSpeed = state.Velocity.Dot(forward.Perpendicular);
+        var throttle = Math.Clamp(input.Throttle, 0, 1);
+        var brake = Math.Clamp(input.Brake, 0, 1);
+        var steer = Geometry.MoveTowards(state.Steer, Math.Clamp(input.Steer, -1, 1), spec.SteerRate * dt);
+
+        var acceleration = 0.0;
+        var reversing = false;
+        if (throttle > 0)
+        {
+            var power = spec.Power * (onGrass ? spec.GrassPowerFactor : 1);
+            acceleration += throttle * Math.Min(spec.MaxAcceleration, power / Math.Max(Math.Abs(forwardSpeed), 1));
+        }
+
+        if (brake > 0)
+        {
+            if (forwardSpeed > ReverseThreshold)
+            {
+                acceleration -= brake * spec.BrakeDeceleration;
+            }
+            else if (throttle <= 0)
+            {
+                acceleration -= brake * spec.ReverseAcceleration;
+                reversing = true;
+            }
+        }
+
+        acceleration -= spec.AeroDrag * forwardSpeed * Math.Abs(forwardSpeed);
+        var speed = forwardSpeed + acceleration * dt;
+        if (reversing)
+        {
+            speed = Math.Max(speed, Math.Min(forwardSpeed, -spec.MaxReverseSpeed));
+        }
+
+        speed = Geometry.MoveTowards(speed, 0, (spec.RollingResistance + (onGrass ? spec.GrassDrag : 0)) * dt);
+
+        var yawRate = steer * MaxYawRate(spec, speed, surface) * Math.Sign(speed);
+        var heading = Geometry.NormalizeAngle(state.Heading + yawRate * dt);
+        var remainingGrip = Math.Max(grip - Math.Abs(speed * yawRate), grip * 0.3);
+        var lateral = Geometry.MoveTowards(lateralSpeed, 0, remainingGrip * dt);
+        var direction = Vec2.FromAngle(heading);
+        var velocity = direction * speed + direction.Perpendicular * lateral;
+        return new CarState(state.Position + velocity * dt, heading, velocity, steer, yawRate);
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/CarSpec.cs
+SIZE:     1.05 KB (1076 bytes)
+LINES:    42
+SHA256:   d3863161991cc9f2ba3521b485c42cd4fc9f4b61beefc41c72c58b2faf015b41
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed record CarSpec
+{
+    public static CarSpec Default { get; } = new();
+
+    public double Length { get; init; } = 4.8;
+
+    public double Width { get; init; } = 2.1;
+
+    public double Wheelbase { get; init; } = 2.8;
+
+    public double MaxSteerAngle { get; init; } = 0.6;
+
+    public double SteerRate { get; init; } = 4.5;
+
+    public double MaxAcceleration { get; init; } = 9;
+
+    public double Power { get; init; } = 190;
+
+    public double AeroDrag { get; init; } = 0.0018;
+
+    public double RollingResistance { get; init; } = 0.3;
+
+    public double BrakeDeceleration { get; init; } = 16;
+
+    public double ReverseAcceleration { get; init; } = 5;
+
+    public double MaxReverseSpeed { get; init; } = 9;
+
+    public double TarmacGrip { get; init; } = 12.5;
+
+    public double GrassGrip { get; init; } = 5.5;
+
+    public double GrassDrag { get; init; } = 3.5;
+
+    public double GrassPowerFactor { get; init; } = 0.55;
+
+    public double WallRestitution { get; init; } = 0.3;
+
+    public double WallFriction { get; init; } = 0.75;
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/CarState.cs
+SIZE:     0.39 KB (399 bytes)
+LINES:    12
+SHA256:   f14d34aae6468a8429f31bc72c30657e911c299714ba3acb142216563e92c5d0
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public readonly record struct CarState(Vec2 Position, double Heading, Vec2 Velocity, double Steer = 0, double YawRate = 0)
+{
+    public Vec2 Forward => Vec2.FromAngle(Heading);
+
+    public double ForwardSpeed => Velocity.Dot(Forward);
+
+    public double Speed => Velocity.Length;
+
+    public static CarState At(Pose pose) => new(pose.Position, pose.Heading, Vec2.Zero);
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Circuits.cs
+SIZE:     0.85 KB (867 bytes)
+LINES:    28
+SHA256:   8e1133f6aae25345ea658faea62c7fc36694dee7526ea6d13c9933901a491d27
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public static class Circuits
+{
+    public static TrackDefinition Gullwing { get; } = new(
+        "Gullwing Park",
+        Vec2.Zero,
+        0,
+        [
+            TrackSection.Straight(233.777),
+            TrackSection.Arc(70, 90),
+            TrackSection.Straight(36.125),
+            TrackSection.Arc(55, -50),
+            TrackSection.Arc(42, 95),
+            TrackSection.Straight(70),
+            TrackSection.Arc(32, 45),
+            TrackSection.Straight(320),
+            TrackSection.Arc(27, 180),
+            TrackSection.Straight(110),
+            TrackSection.Arc(38, -90),
+            TrackSection.Straight(35),
+            TrackSection.Arc(34, -90),
+            TrackSection.Straight(170),
+            TrackSection.Arc(48, 90),
+            TrackSection.Arc(60, 90),
+            TrackSection.Straight(110),
+        ]);
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/ControlInput.cs
+SIZE:     0.11 KB (116 bytes)
+LINES:    3
+SHA256:   70a70325892c1f2a576714e5f742db1f2a491c1d014f97b605f1b3f36447b43c
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public readonly record struct ControlInput(double Throttle, double Brake, double Steer);
+
+
+================================================================================
+FILE:     src/TermRacer.Core/DriveControl.cs
+SIZE:     0.11 KB (112 bytes)
+LINES:    9
+SHA256:   ec0c1fac73ce8aa72cb8c4143a6f113b5d036e344e39e8ddc3185b20a968bdef
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public enum DriveControl
+{
+    Throttle,
+    Brake,
+    SteerLeft,
+    SteerRight,
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/DriverControls.cs
+SIZE:     2.24 KB (2296 bytes)
+LINES:    76
+SHA256:   02bb1ad5b4b94b61f42b3c5b5822d9bcc7d51276cebaea0550684853b485c669
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class DriverControls(double initialHold = 0.55, double repeatHold = 0.16)
+{
+    private readonly double[] expiry = new double[4];
+    private readonly bool[] held = new bool[4];
+
+    public bool ReleaseAware { get; private set; }
+
+    public bool ThrottleLatched { get; private set; }
+
+    public void Press(DriveControl control, double now)
+    {
+        if (ReleaseAware)
+        {
+            held[(int)control] = true;
+            return;
+        }
+
+        switch (control)
+        {
+            case DriveControl.Throttle:
+                ThrottleLatched = true;
+                expiry[(int)DriveControl.Brake] = 0;
+                break;
+            case DriveControl.Brake:
+                ThrottleLatched = false;
+                Extend(control, now);
+                break;
+            default:
+                Extend(control, now);
+                expiry[(int)(control == DriveControl.SteerLeft ? DriveControl.SteerRight : DriveControl.SteerLeft)] = 0;
+                break;
+        }
+    }
+
+    public void Release(DriveControl control, double now)
+    {
+        if (!ReleaseAware)
+        {
+            for (var i = 0; i < held.Length; i++)
+            {
+                held[i] = LegacyActive((DriveControl)i, now);
+            }
+
+            ReleaseAware = true;
+            ThrottleLatched = false;
+            Array.Clear(expiry);
+        }
+
+        held[(int)control] = false;
+    }
+
+    public bool Active(DriveControl control, double now) => ReleaseAware ? held[(int)control] : LegacyActive(control, now);
+
+    public ControlInput Sample(double now) => new(
+        Active(DriveControl.Throttle, now) ? 1 : 0,
+        Active(DriveControl.Brake, now) ? 1 : 0,
+        (Active(DriveControl.SteerRight, now) ? 1 : 0) - (Active(DriveControl.SteerLeft, now) ? 1 : 0));
+
+    public void Clear()
+    {
+        Array.Clear(expiry);
+        Array.Clear(held);
+        ThrottleLatched = false;
+    }
+
+    private bool LegacyActive(DriveControl control, double now) =>
+        control == DriveControl.Throttle ? ThrottleLatched : now < expiry[(int)control];
+
+    private void Extend(DriveControl control, double now)
+    {
+        var index = (int)control;
+        expiry[index] = now + (now < expiry[index] ? repeatHold : initialHold);
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/FixedStepClock.cs
+SIZE:     0.48 KB (489 bytes)
+LINES:    18
+SHA256:   7bb16f12deba3910758298414538fbe3a14678d99be75682b9ab60b542181c3e
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class FixedStepClock(double step, double maxElapsed = 0.25)
+{
+    private double accumulator;
+
+    public double Step => step;
+
+    public int Advance(double elapsedSeconds)
+    {
+        accumulator += Math.Clamp(elapsedSeconds, 0, maxElapsed);
+        var steps = (int)Math.Floor(accumulator / step + 1e-9);
+        accumulator = Math.Max(0, accumulator - steps * step);
+        return steps;
+    }
+
+    public void Reset() => accumulator = 0;
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Game.cs
+SIZE:     3.82 KB (3915 bytes)
+LINES:    159
+SHA256:   2db7b78d6a8105680a83f480e37f9edbd2689750fd79f16136db9bb541bcd36e
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class Game
+{
+    public const double KeyGuard = 0.3;
+
+    private readonly FixedStepClock clock = new(RaceSession.Step);
+    private double lastToggle = double.NegativeInfinity;
+    private double screenSince = double.NegativeInfinity;
+
+    public Game()
+        : this(Track.Build(Circuits.Gullwing), CarSpec.Default)
+    {
+    }
+
+    public Game(Track track, CarSpec spec)
+        : this(track, RacingLine.Build(track), spec)
+    {
+    }
+
+    public Game(Track track, RacingLine line, CarSpec spec)
+    {
+        Track = track;
+        Line = line;
+        Spec = spec;
+        Demo = new RaceSession(track, line, spec, RaceMode.Zen, autopilotEngaged: true);
+    }
+
+    public Track Track { get; }
+
+    public RacingLine Line { get; }
+
+    public CarSpec Spec { get; }
+
+    public RaceSession Demo { get; }
+
+    public RaceSession? Race { get; private set; }
+
+    public GameScreen Screen { get; private set; }
+
+    public RaceMode SelectedMode { get; private set; }
+
+    public bool ExitRequested { get; private set; }
+
+    public bool Paused { get; set; }
+
+    public double Clock { get; private set; }
+
+    public RaceSession ActiveSession => Screen == GameScreen.Menu || Race is null ? Demo : Race;
+
+    public void Press(GameKey key)
+    {
+        if (key == GameKey.Exit)
+        {
+            ExitRequested = true;
+            return;
+        }
+
+        if (Paused)
+        {
+            return;
+        }
+
+        switch (Screen)
+        {
+            case GameScreen.Menu:
+                PressMenu(key);
+                break;
+            case GameScreen.Race:
+                PressRace(key);
+                break;
+            case GameScreen.Results when key == GameKey.Confirm && Clock - screenSince >= KeyGuard:
+                Race = null;
+                SetScreen(GameScreen.Menu);
+                break;
+        }
+    }
+
+    public void Release(GameKey key)
+    {
+        if (Screen == GameScreen.Race && Race is not null && ToControl(key) is { } control)
+        {
+            Race.Release(control);
+        }
+    }
+
+    public void Advance(double elapsedSeconds)
+    {
+        if (Paused || ExitRequested)
+        {
+            clock.Reset();
+            return;
+        }
+
+        Clock += Math.Max(0, elapsedSeconds);
+        ActiveSession.Advance(clock.Advance(elapsedSeconds));
+        if (Screen == GameScreen.Race && Race is { IsFinished: true })
+        {
+            SetScreen(GameScreen.Results);
+        }
+    }
+
+    private void PressMenu(GameKey key)
+    {
+        switch (key)
+        {
+            case GameKey.Up or GameKey.Left:
+                SelectedMode = RaceMode.SingleLap;
+                break;
+            case GameKey.Down or GameKey.Right:
+                SelectedMode = RaceMode.Zen;
+                break;
+            case GameKey.Confirm when Clock - screenSince >= KeyGuard:
+                Race = new RaceSession(Track, Line, Spec, SelectedMode);
+                clock.Reset();
+                SetScreen(GameScreen.Race);
+                break;
+        }
+    }
+
+    private void PressRace(GameKey key)
+    {
+        if (Race is null)
+        {
+            return;
+        }
+
+        if (key == GameKey.ToggleAutopilot)
+        {
+            if (Clock - lastToggle >= KeyGuard)
+            {
+                lastToggle = Clock;
+                Race.ToggleAutopilot();
+            }
+
+            return;
+        }
+
+        if (ToControl(key) is { } control)
+        {
+            Race.Press(control);
+        }
+    }
+
+    private void SetScreen(GameScreen screen)
+    {
+        Screen = screen;
+        screenSince = Clock;
+    }
+
+    private static DriveControl? ToControl(GameKey key) => key switch
+    {
+        GameKey.Up => DriveControl.Throttle,
+        GameKey.Down => DriveControl.Brake,
+        GameKey.Left => DriveControl.SteerLeft,
+        GameKey.Right => DriveControl.SteerRight,
+        _ => null,
+    };
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/GameKey.cs
+SIZE:     0.13 KB (134 bytes)
+LINES:    12
+SHA256:   c26499eb058c8443f4105e68fc117373edec04344a824018c5bf931ba254a96a
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public enum GameKey
+{
+    Up,
+    Down,
+    Left,
+    Right,
+    Confirm,
+    ToggleAutopilot,
+    Exit,
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/GameScreen.cs
+SIZE:     0.08 KB (87 bytes)
+LINES:    8
+SHA256:   fd903f77b5f94002b3addfd04d09efc7cbbc993278f2b16e2a01d2cb498dd286
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public enum GameScreen
+{
+    Menu,
+    Race,
+    Results,
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Gate.cs
+SIZE:     0.14 KB (148 bytes)
+LINES:    6
+SHA256:   2e6feeab914e08500880dba1f4b5a7b1f031eab02ea9dd2c91e231bf5eb09fc6
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public readonly record struct Gate(int Index, Vec2 A, Vec2 B, Vec2 Direction)
+{
+    public Vec2 Center => (A + B) / 2;
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Geometry.cs
+SIZE:     1.13 KB (1160 bytes)
+LINES:    33
+SHA256:   0604d38d7c0fac6b3cd03a03f8b6dbfe2acdf18b2acf6515b751eed7de2e1b4a
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public static class Geometry
+{
+    public static double MoveTowards(double current, double target, double maxDelta) =>
+        Math.Abs(target - current) <= maxDelta ? target : current + Math.Sign(target - current) * maxDelta;
+
+    public static double NormalizeAngle(double radians) => Math.IEEERemainder(radians, Math.Tau);
+
+    public static double ClosestParameter(Vec2 start, Vec2 end, Vec2 point)
+    {
+        var segment = end - start;
+        var lengthSquared = segment.LengthSquared;
+        return lengthSquared < 1e-12 ? 0 : Math.Clamp((point - start).Dot(segment) / lengthSquared, 0, 1);
+    }
+
+    public static bool TryIntersect(Vec2 from, Vec2 to, Vec2 lineStart, Vec2 lineEnd, out double t)
+    {
+        var path = to - from;
+        var line = lineEnd - lineStart;
+        var denominator = path.Cross(line);
+        t = 0;
+        if (Math.Abs(denominator) < 1e-12)
+        {
+            return false;
+        }
+
+        var offset = lineStart - from;
+        t = offset.Cross(line) / denominator;
+        var u = offset.Cross(path) / denominator;
+        return t is >= 0 and < 1 && u is >= 0 and <= 1;
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/LapEvent.cs
+SIZE:     0.10 KB (106 bytes)
+LINES:    9
+SHA256:   ff4df91feb43850a2c177a520b57171abed0846572adab29a90b9ce30bf5c741
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public enum LapEvent
+{
+    None,
+    Started,
+    Checkpoint,
+    Completed,
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/LapTracker.cs
+SIZE:     1.85 KB (1894 bytes)
+LINES:    69
+SHA256:   7e3be5a84cd73b3ea540900d6af2b5f5b59b43cbf3694e7a5718abc0742f8de1
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class LapTracker(Track track, RaceMode mode)
+{
+    private readonly List<double> laps = [];
+
+    public RaceMode Mode => mode;
+
+    public RacePhase Phase { get; private set; }
+
+    public int NextGate { get; private set; }
+
+    public double LapStart { get; private set; }
+
+    public IReadOnlyList<double> Laps => laps;
+
+    public double? LastLap => laps.Count > 0 ? laps[^1] : null;
+
+    public double? BestLap => laps.Count > 0 ? laps.Min() : null;
+
+    public int CurrentLap => Phase == RacePhase.Finished ? laps.Count : laps.Count + 1;
+
+    public double CurrentLapTime(double now) => Phase switch
+    {
+        RacePhase.Running => now - LapStart,
+        RacePhase.Finished => laps[^1],
+        _ => 0,
+    };
+
+    public LapEvent Update(Vec2 from, Vec2 to, double fromTime, double toTime)
+    {
+        if (Phase == RacePhase.Finished)
+        {
+            return LapEvent.None;
+        }
+
+        var gate = track.Gates[Phase == RacePhase.Waiting ? 0 : NextGate];
+        if ((to - from).Dot(gate.Direction) <= 0 || !Geometry.TryIntersect(from, to, gate.A, gate.B, out var t))
+        {
+            return LapEvent.None;
+        }
+
+        var time = fromTime + (toTime - fromTime) * t;
+        var firstCheckpoint = track.Gates.Count > 1 ? 1 : 0;
+        if (Phase == RacePhase.Waiting)
+        {
+            Phase = RacePhase.Running;
+            LapStart = time;
+            NextGate = firstCheckpoint;
+            return LapEvent.Started;
+        }
+
+        if (NextGate != 0)
+        {
+            NextGate = (NextGate + 1) % track.Gates.Count;
+            return LapEvent.Checkpoint;
+        }
+
+        laps.Add(time - LapStart);
+        LapStart = time;
+        NextGate = firstCheckpoint;
+        if (mode == RaceMode.SingleLap)
+        {
+            Phase = RacePhase.Finished;
+        }
+
+        return LapEvent.Completed;
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Pose.cs
+SIZE:     0.09 KB (94 bytes)
+LINES:    3
+SHA256:   3dbd228fc7213f7c43ffbb6c39254bf645a6bb75a8cbdc513653a6afe23373f0
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public readonly record struct Pose(Vec2 Position, double Heading);
+
+
+================================================================================
+FILE:     src/TermRacer.Core/RaceMode.cs
+SIZE:     0.07 KB (76 bytes)
+LINES:    7
+SHA256:   64a0d395fa4b37aac6c8e121c9699e96744aee75db0e4b7d8278c9e48a116e4c
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public enum RaceMode
+{
+    SingleLap,
+    Zen,
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/RacePhase.cs
+SIZE:     0.09 KB (93 bytes)
+LINES:    8
+SHA256:   1c78bd194d52f34434f03f113b40c56a136648270966b3e0c08129e44fe0b8ba
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public enum RacePhase
+{
+    Waiting,
+    Running,
+    Finished,
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/RaceSession.cs
+SIZE:     3.23 KB (3306 bytes)
+LINES:    128
+SHA256:   4207c9b56f748a550ffa70fa05c4b75e4e9719dde72ff3f0dca0ea735c1343d9
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class RaceSession
+{
+    public const double Step = 1.0 / 120;
+
+    private readonly Autopilot autopilot;
+    private bool inContact;
+    private double wrongWayTime;
+
+    public RaceSession(Track track, RacingLine line, CarSpec spec, RaceMode mode, bool autopilotEngaged = false)
+    {
+        Track = track;
+        Spec = spec;
+        Mode = mode;
+        autopilot = new Autopilot(line, new SpeedProfile(line, spec), spec);
+        Laps = new LapTracker(track, mode);
+        AutopilotEngaged = autopilotEngaged;
+        Place(CarState.At(track.StartPose));
+    }
+
+    public Track Track { get; }
+
+    public CarSpec Spec { get; }
+
+    public RaceMode Mode { get; }
+
+    public LapTracker Laps { get; }
+
+    public DriverControls Controls { get; } = new();
+
+    public CarState Car { get; private set; }
+
+    public TrackProjection Projection { get; private set; }
+
+    public Surface Surface { get; private set; }
+
+    public ControlInput Input { get; private set; }
+
+    public bool AutopilotEngaged { get; private set; }
+
+    public double Time { get; private set; }
+
+    public int WallHits { get; private set; }
+
+    public LapEvent LastEvent { get; private set; }
+
+    public double LastEventTime { get; private set; } = double.NegativeInfinity;
+
+    public bool WrongWay => wrongWayTime > 0.8;
+
+    public bool IsFinished => Laps.Phase == RacePhase.Finished;
+
+    public void Place(CarState car)
+    {
+        Car = car;
+        Projection = Track.Project(car.Position);
+        Surface = Track.SurfaceAt(Projection);
+        autopilot.Reset();
+        inContact = false;
+        wrongWayTime = 0;
+    }
+
+    public void Press(DriveControl control)
+    {
+        if (!AutopilotEngaged)
+        {
+            Controls.Press(control, Time);
+        }
+    }
+
+    public void Release(DriveControl control) => Controls.Release(control, Time);
+
+    public void ToggleAutopilot()
+    {
+        AutopilotEngaged = !AutopilotEngaged;
+        Controls.Clear();
+        autopilot.Reset();
+    }
+
+    public void Advance(int steps)
+    {
+        for (var i = 0; i < steps && !IsFinished; i++)
+        {
+            StepOnce();
+        }
+    }
+
+    public void StepOnce()
+    {
+        if (IsFinished)
+        {
+            return;
+        }
+
+        Input = AutopilotEngaged ? autopilot.Drive(Car, Surface, Step) : Controls.Sample(Time);
+        var from = Car.Position;
+        var next = CarPhysics.Step(Car, Input, Spec, Surface, Step);
+        var projection = Track.Project(next.Position);
+        if (Walls.Resolve(ref next, Track, Spec, projection) is { } impact)
+        {
+            if (!inContact && impact > 1)
+            {
+                WallHits++;
+            }
+
+            inContact = true;
+            projection = Track.Project(next.Position);
+        }
+        else
+        {
+            inContact = false;
+        }
+
+        Car = next;
+        Projection = projection;
+        Surface = Track.SurfaceAt(projection);
+        var lapEvent = Laps.Update(from, next.Position, Time, Time + Step);
+        Time += Step;
+        if (lapEvent != LapEvent.None)
+        {
+            LastEvent = lapEvent;
+            LastEventTime = Time;
+        }
+
+        wrongWayTime = Car.Velocity.Dot(projection.Tangent) < -2 ? wrongWayTime + Step : 0;
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/RacingLine.cs
+SIZE:     5.04 KB (5158 bytes)
+LINES:    144
+SHA256:   196202d24c607a7b4581f6a689f09a8d4dc2bdcfe86c6c54aca10613aee17064
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class RacingLine
+{
+    private readonly Vec2[] points;
+    private readonly double[] offsets;
+    private readonly double[] lengths;
+    private readonly double[] curvatures;
+
+    private RacingLine(Track track, double[] offsets)
+    {
+        Track = track;
+        this.offsets = offsets;
+        var count = track.Count;
+        points = new Vec2[count];
+        lengths = new double[count];
+        curvatures = new double[count];
+        for (var i = 0; i < count; i++)
+        {
+            points[i] = track.Point(i) + track.Normal(i) * offsets[i];
+        }
+
+        for (var i = 0; i < count; i++)
+        {
+            lengths[i] = points[i].DistanceTo(points[(i + 1) % count]);
+            Length += lengths[i];
+            curvatures[i] = Menger(points[(i - 2 + count) % count], points[i], points[(i + 2) % count]);
+        }
+    }
+
+    public Track Track { get; }
+
+    public int Count => points.Length;
+
+    public double Length { get; }
+
+    public Vec2 Point(int index) => points[Track.Wrap(index)];
+
+    public double Offset(int index) => offsets[Track.Wrap(index)];
+
+    public double Curvature(int index) => curvatures[Track.Wrap(index)];
+
+    public double SegmentLength(int index) => lengths[Track.Wrap(index)];
+
+    public static RacingLine Build(Track track, double margin = 1.7)
+    {
+        var limit = Math.Max(0, track.HalfWidth - margin);
+        var offsets = new double[track.Count];
+        var coarseCount = Math.Max(5, track.Count / 5);
+        var coarse = Enumerable.Range(0, coarseCount).Select(k => (int)Math.Round((double)k * track.Count / coarseCount)).ToArray();
+        Relax(track, offsets, coarse, limit, 4000);
+        Interpolate(track.Count, offsets, coarse);
+        Relax(track, offsets, [.. Enumerable.Range(0, track.Count)], limit, 600);
+        return new RacingLine(track, offsets);
+    }
+
+    public (int Index, double T) Locate(Vec2 position, int hint = -1)
+    {
+        var global = hint < 0;
+        var start = global ? 0 : hint - 20;
+        var span = global ? points.Length : Math.Min(points.Length, 80);
+        var bestIndex = 0;
+        var bestT = 0.0;
+        var bestDistance = double.MaxValue;
+        for (var j = 0; j < span; j++)
+        {
+            var i = Track.Wrap(start + j);
+            var from = points[i];
+            var to = points[(i + 1) % points.Length];
+            var t = Geometry.ClosestParameter(from, to, position);
+            var distance = (position - Vec2.Lerp(from, to, t)).LengthSquared;
+            if (distance < bestDistance)
+            {
+                bestDistance = distance;
+                bestIndex = i;
+                bestT = t;
+            }
+        }
+
+        return !global && bestDistance > 900 ? Locate(position) : (bestIndex, bestT);
+    }
+
+    public Vec2 PointAhead(int index, double t, double distance)
+    {
+        var i = Track.Wrap(index);
+        var remaining = distance + t * lengths[i];
+        for (var guard = 0; remaining > lengths[i] && guard < points.Length; guard++)
+        {
+            remaining -= lengths[i];
+            i = (i + 1) % points.Length;
+        }
+
+        var fraction = lengths[i] > 1e-9 ? Math.Min(1, remaining / lengths[i]) : 0;
+        return Vec2.Lerp(points[i], points[(i + 1) % points.Length], fraction);
+    }
+
+    private static void Relax(Track track, double[] offsets, int[] indices, double limit, int iterations)
+    {
+        var count = indices.Length;
+        var positions = new Vec2[count];
+        for (var k = 0; k < count; k++)
+        {
+            positions[k] = track.Point(indices[k]) + track.Normal(indices[k]) * offsets[indices[k]];
+        }
+
+        for (var iteration = 0; iteration < iterations; iteration++)
+        {
+            for (var k = 0; k < count; k++)
+            {
+                var near = positions[(k - 1 + count) % count] + positions[(k + 1) % count];
+                var far = positions[(k - 2 + count) % count] + positions[(k + 2) % count];
+                var target = (4 * near - far) / 6;
+                var index = indices[k];
+                var anchor = track.Point(index);
+                var normal = track.Normal(index);
+                var offset = Math.Clamp((target - anchor).Dot(normal), -limit, limit);
+                offsets[index] = offset;
+                positions[k] = anchor + normal * offset;
+            }
+        }
+    }
+
+    private static void Interpolate(int count, double[] offsets, int[] indices)
+    {
+        for (var k = 0; k < indices.Length; k++)
+        {
+            var from = indices[k];
+            var to = k + 1 < indices.Length ? indices[k + 1] : indices[0] + count;
+            for (var i = from + 1; i < to; i++)
+            {
+                var t = (double)(i - from) / (to - from);
+                offsets[i % count] = offsets[from] + (offsets[to % count] - offsets[from]) * t;
+            }
+        }
+    }
+
+    private static double Menger(Vec2 a, Vec2 b, Vec2 c)
+    {
+        var ab = b - a;
+        var bc = c - b;
+        var denominator = ab.Length * bc.Length * (c - a).Length;
+        return denominator < 1e-9 ? 0 : 2 * ab.Cross(bc) / denominator;
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/SpeedProfile.cs
+SIZE:     1.59 KB (1630 bytes)
+LINES:    49
+SHA256:   76a096895a8dd6a11674c3750b3368d40f946921c9048e13523a6a5298367243
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class SpeedProfile
+{
+    private readonly RacingLine line;
+    private readonly double[] speeds;
+
+    public SpeedProfile(RacingLine line, CarSpec spec, double gripFactor = 0.9, double brakeFactor = 0.72, double topSpeed = 44)
+    {
+        this.line = line;
+        var count = line.Count;
+        speeds = new double[count];
+        var lateral = spec.TarmacGrip * gripFactor;
+        for (var i = 0; i < count; i++)
+        {
+            var curvature = Math.Max(Math.Abs(line.Curvature(i - 1)), Math.Max(Math.Abs(line.Curvature(i)), Math.Abs(line.Curvature(i + 1))));
+            speeds[i] = Math.Min(topSpeed, Math.Sqrt(lateral / Math.Max(curvature, 1e-6)));
+        }
+
+        BrakeDeceleration = spec.BrakeDeceleration * brakeFactor;
+        for (var pass = 0; pass < 2; pass++)
+        {
+            for (var i = count - 1; i >= 0; i--)
+            {
+                var next = speeds[(i + 1) % count];
+                speeds[i] = Math.Min(speeds[i], Math.Sqrt(next * next + 2 * BrakeDeceleration * line.SegmentLength(i)));
+            }
+        }
+    }
+
+    public double BrakeDeceleration { get; }
+
+    public int Count => speeds.Length;
+
+    public double this[int index] => speeds[line.Track.Wrap(index)];
+
+    public double MinimumAhead(int index, double distance)
+    {
+        var i = line.Track.Wrap(index);
+        var minimum = speeds[i];
+        for (var covered = 0.0; covered < distance; i = (i + 1) % speeds.Length)
+        {
+            minimum = Math.Min(minimum, speeds[i]);
+            covered += line.SegmentLength(i);
+        }
+
+        return minimum;
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Surface.cs
+SIZE:     0.07 KB (74 bytes)
+LINES:    7
+SHA256:   5fc9b6dca6e5442a029cbbb3a619871d15b5f18a581f2a6fedfffc4279400efd
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public enum Surface
+{
+    Tarmac,
+    Grass,
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/TermRacer.Core.csproj
+SIZE:     0.04 KB (45 bytes)
+LINES:    2
+SHA256:   3702bcd64b09004893c0afdb530b6b91249de567d2b8708f8ac16dab0c9dd561
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+<Project Sdk="Microsoft.NET.Sdk">
+</Project>
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Track.cs
+SIZE:     6.44 KB (6597 bytes)
+LINES:    182
+SHA256:   3f8c7c8df5ed09fa5a469cdc2f8c7663581808abd4c9217ca044350ec5f2c399
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed class Track
+{
+    private readonly Vec2[] points;
+    private readonly Vec2[] tangents;
+    private readonly Vec2[] normals;
+    private readonly double[] curvatures;
+
+    private Track(TrackDefinition definition, Vec2[] points)
+    {
+        Definition = definition;
+        this.points = points;
+        var count = points.Length;
+        tangents = new Vec2[count];
+        normals = new Vec2[count];
+        curvatures = new double[count];
+        for (var i = 0; i < count; i++)
+        {
+            Length += points[i].DistanceTo(points[(i + 1) % count]);
+        }
+
+        Spacing = Length / count;
+        for (var i = 0; i < count; i++)
+        {
+            var previous = points[(i - 1 + count) % count];
+            var next = points[(i + 1) % count];
+            var incoming = points[i] - previous;
+            var outgoing = next - points[i];
+            tangents[i] = (next - previous).Normalized();
+            normals[i] = tangents[i].Perpendicular;
+            curvatures[i] = Math.Atan2(incoming.Cross(outgoing), incoming.Dot(outgoing)) / (0.5 * (incoming.Length + outgoing.Length));
+        }
+
+        Gates = BuildGates();
+        var startIndex = Wrap(-(int)Math.Round(definition.StartOffset / Spacing));
+        StartPose = new Pose(points[startIndex], tangents[startIndex].Angle);
+        var reach = WallOffset + 2;
+        BoundsMin = new Vec2(points.Min(p => p.X) - reach, points.Min(p => p.Y) - reach);
+        BoundsMax = new Vec2(points.Max(p => p.X) + reach, points.Max(p => p.Y) + reach);
+    }
+
+    public TrackDefinition Definition { get; }
+
+    public string Name => Definition.Name;
+
+    public int Count => points.Length;
+
+    public double Length { get; }
+
+    public double Spacing { get; }
+
+    public double HalfWidth => Definition.HalfWidth;
+
+    public double WallOffset => Definition.HalfWidth + Definition.Runoff;
+
+    public double TrackLimit => Definition.HalfWidth + 0.6;
+
+    public IReadOnlyList<Gate> Gates { get; }
+
+    public Pose StartPose { get; }
+
+    public Vec2 BoundsMin { get; }
+
+    public Vec2 BoundsMax { get; }
+
+    public int Wrap(int index) => (index % Count + Count) % Count;
+
+    public Vec2 Point(int index) => points[Wrap(index)];
+
+    public Vec2 Tangent(int index) => tangents[Wrap(index)];
+
+    public Vec2 Normal(int index) => normals[Wrap(index)];
+
+    public double Curvature(int index) => curvatures[Wrap(index)];
+
+    public TrackProjection Project(Vec2 position)
+    {
+        var best = 0;
+        var bestT = 0.0;
+        var bestDistance = double.MaxValue;
+        for (var i = 0; i < points.Length; i++)
+        {
+            var start = points[i];
+            var end = points[i + 1 == points.Length ? 0 : i + 1];
+            var t = Geometry.ClosestParameter(start, end, position);
+            var distance = (position - Vec2.Lerp(start, end, t)).LengthSquared;
+            if (distance < bestDistance)
+            {
+                bestDistance = distance;
+                best = i;
+                bestT = t;
+            }
+        }
+
+        var from = points[best];
+        var to = points[Wrap(best + 1)];
+        var point = Vec2.Lerp(from, to, bestT);
+        var tangent = (to - from).Normalized();
+        var offset = position - point;
+        var length = offset.Length;
+        var side = offset.Dot(tangent.Perpendicular) >= 0 ? 1 : -1;
+        var away = length > 1e-9 ? offset / length : tangent.Perpendicular * side;
+        return new TrackProjection(best, bestT, point, tangent, away, length, length * side, (best + bestT) * Spacing);
+    }
+
+    public Surface SurfaceAt(in TrackProjection projection) => projection.Distance <= TrackLimit ? Surface.Tarmac : Surface.Grass;
+
+    public Surface SurfaceAt(Vec2 position) => SurfaceAt(Project(position));
+
+    public static Track Build(TrackDefinition definition)
+    {
+        var sections = definition.Sections;
+        if (sections.Count == 0 || sections.Any(section => section.Length <= 0))
+        {
+            throw new ArgumentException("Track needs sections with positive length.", nameof(definition));
+        }
+
+        var starts = new (Vec2 Position, double Heading, double Distance)[sections.Count];
+        var position = definition.Origin;
+        var heading = definition.Heading;
+        var total = 0.0;
+        for (var i = 0; i < sections.Count; i++)
+        {
+            starts[i] = (position, heading, total);
+            (position, heading) = Advance(position, heading, sections[i], sections[i].Length);
+            total += sections[i].Length;
+        }
+
+        var closure = position - definition.Origin;
+        if (closure.Length > 0.5 || Math.Abs(Geometry.NormalizeAngle(heading - definition.Heading)) > 1e-3)
+        {
+            throw new ArgumentException("Track sections do not form a closed loop.", nameof(definition));
+        }
+
+        var count = Math.Max(3, (int)Math.Round(total / definition.Spacing));
+        var step = total / count;
+        var points = new Vec2[count];
+        var current = 0;
+        for (var k = 0; k < count; k++)
+        {
+            var distance = k * step;
+            while (current < starts.Length - 1 && starts[current + 1].Distance <= distance)
+            {
+                current++;
+            }
+
+            var (origin, direction, offset) = starts[current];
+            var (point, _) = Advance(origin, direction, sections[current], distance - offset);
+            points[k] = point - closure * (distance / total);
+        }
+
+        return new Track(definition, points);
+    }
+
+    private static (Vec2 Position, double Heading) Advance(Vec2 position, double heading, TrackSection section, double distance)
+    {
+        if (!section.IsArc)
+        {
+            return (position + Vec2.FromAngle(heading) * distance, heading);
+        }
+
+        var sign = Math.Sign(section.Degrees);
+        var center = position + Vec2.FromAngle(heading).Perpendicular * (section.Radius * sign);
+        var turned = heading + sign * distance / section.Radius;
+        return (center - Vec2.FromAngle(turned).Perpendicular * (section.Radius * sign), turned);
+    }
+
+    private Gate[] BuildGates()
+    {
+        var count = Math.Max(1, Definition.Checkpoints);
+        var reach = WallOffset + 1;
+        var gates = new Gate[count];
+        for (var k = 0; k < count; k++)
+        {
+            var index = (int)Math.Round((double)k * Count / count) % Count;
+            gates[k] = new Gate(k, points[index] - normals[index] * reach, points[index] + normals[index] * reach, tangents[index]);
+        }
+
+        return gates;
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/TrackDefinition.cs
+SIZE:     0.28 KB (290 bytes)
+LINES:    12
+SHA256:   46d90ff3abc9165c7b52c84083ad50c72858c05ca892c7f49f438e854b9fbc4c
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public sealed record TrackDefinition(
+    string Name,
+    Vec2 Origin,
+    double Heading,
+    IReadOnlyList<TrackSection> Sections,
+    double HalfWidth = 7,
+    double Runoff = 9,
+    double Spacing = 2,
+    int Checkpoints = 12,
+    double StartOffset = 18);
+
+
+================================================================================
+FILE:     src/TermRacer.Core/TrackProjection.cs
+SIZE:     0.17 KB (177 bytes)
+LINES:    3
+SHA256:   c06fa388cbda862378f23cbf3d81f653a796d2c695d2a72cb63fad3a94741849
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public readonly record struct TrackProjection(int Segment, double T, Vec2 Point, Vec2 Tangent, Vec2 Away, double Distance, double Lateral, double S);
+
+
+================================================================================
+FILE:     src/TermRacer.Core/TrackSection.cs
+SIZE:     0.36 KB (371 bytes)
+LINES:    10
+SHA256:   cb46a1a1a1518e4e52d092220e31d2cb80dcc47cd00cab77f070509db860dbb4
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public readonly record struct TrackSection(double Length, double Radius, double Degrees)
+{
+    public bool IsArc => Radius > 0;
+
+    public static TrackSection Straight(double length) => new(length, 0, 0);
+
+    public static TrackSection Arc(double radius, double degrees) => new(radius * Math.Abs(degrees) * Math.PI / 180, radius, degrees);
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Vec2.cs
+SIZE:     1.57 KB (1606 bytes)
+LINES:    52
+SHA256:   997c95d11cd25cb3c8f85f8c6d7fd226d3087cb7ce0aa407d425750c847c79bf
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public readonly record struct Vec2(double X, double Y)
+{
+    public static Vec2 Zero => default;
+
+    public double Length => Math.Sqrt(X * X + Y * Y);
+
+    public double LengthSquared => X * X + Y * Y;
+
+    public double Angle => Math.Atan2(Y, X);
+
+    public Vec2 Perpendicular => new(-Y, X);
+
+    public static Vec2 FromAngle(double radians)
+    {
+        var (sin, cos) = Math.SinCos(radians);
+        return new Vec2(cos, sin);
+    }
+
+    public static Vec2 Lerp(Vec2 from, Vec2 to, double t) => from + (to - from) * t;
+
+    public Vec2 Normalized()
+    {
+        var length = Length;
+        return length > 1e-12 ? new Vec2(X / length, Y / length) : Zero;
+    }
+
+    public Vec2 Rotate(double radians)
+    {
+        var (sin, cos) = Math.SinCos(radians);
+        return new Vec2(X * cos - Y * sin, X * sin + Y * cos);
+    }
+
+    public double Dot(Vec2 other) => X * other.X + Y * other.Y;
+
+    public double Cross(Vec2 other) => X * other.Y - Y * other.X;
+
+    public double DistanceTo(Vec2 other) => (other - this).Length;
+
+    public static Vec2 operator +(Vec2 a, Vec2 b) => new(a.X + b.X, a.Y + b.Y);
+
+    public static Vec2 operator -(Vec2 a, Vec2 b) => new(a.X - b.X, a.Y - b.Y);
+
+    public static Vec2 operator -(Vec2 value) => new(-value.X, -value.Y);
+
+    public static Vec2 operator *(Vec2 value, double scale) => new(value.X * scale, value.Y * scale);
+
+    public static Vec2 operator *(double scale, Vec2 value) => new(value.X * scale, value.Y * scale);
+
+    public static Vec2 operator /(Vec2 value, double scale) => new(value.X / scale, value.Y / scale);
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Core/Walls.cs
+SIZE:     0.79 KB (814 bytes)
+LINES:    25
+SHA256:   b3b2ecd87a6bb434f1282eec4ca88e162cbd9a03442d06db17f12419b04bf12e
+MODIFIED: 2026-09-27 16:40:50 (UTC)
+================================================================================
+
+namespace TermRacer.Core;
+
+public static class Walls
+{
+    public static double? Resolve(ref CarState state, Track track, CarSpec spec, in TrackProjection projection)
+    {
+        var limit = track.WallOffset - spec.Width / 2;
+        if (projection.Distance <= limit)
+        {
+            return null;
+        }
+
+        var outward = projection.Away;
+        var normalSpeed = state.Velocity.Dot(outward);
+        var velocity = state.Velocity;
+        if (normalSpeed > 0)
+        {
+            var tangential = velocity - outward * normalSpeed;
+            velocity = tangential * spec.WallFriction - outward * (normalSpeed * spec.WallRestitution);
+        }
+
+        state = state with { Position = projection.Point + outward * limit, Velocity = velocity };
+        return Math.Max(0, normalSpeed);
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/Camera.cs
+SIZE:     1.10 KB (1122 bytes)
+LINES:    30
+SHA256:   f89117ec30fd8c395f50ec4a23e926188efe37dede16149b2d7c361ec116eb08
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using TermRacer.Core;
+
+namespace TermRacer.Rendering;
+
+public readonly record struct Camera(Vec2 Center, double MetersPerPixel, int Width, int Height)
+{
+    public Vec2 WorldMin => ToWorld(Vec2.Zero);
+
+    public Vec2 WorldMax => ToWorld(new Vec2(Width, Height));
+
+    public Vec2 ToPixel(Vec2 world) =>
+        new((world.X - Center.X) / MetersPerPixel + Width * 0.5, (world.Y - Center.Y) / MetersPerPixel + Height * 0.5);
+
+    public Vec2 ToWorld(Vec2 pixel) =>
+        new((pixel.X - Width * 0.5) * MetersPerPixel + Center.X, (pixel.Y - Height * 0.5) * MetersPerPixel + Center.Y);
+
+    public bool Overlaps(Vec2 min, Vec2 max)
+    {
+        var low = WorldMin;
+        var high = WorldMax;
+        return max.X >= low.X && min.X <= high.X && max.Y >= low.Y && min.Y <= high.Y;
+    }
+
+    public static Camera Fit(Vec2 min, Vec2 max, int width, int height, double padding = 1)
+    {
+        var size = max - min;
+        var scale = Math.Max(size.X / Math.Max(1, width - 2 * padding), size.Y / Math.Max(1, height - 2 * padding));
+        return new Camera((min + max) / 2, Math.Max(scale, 1e-6), width, height);
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/Cell.cs
+SIZE:     0.16 KB (159 bytes)
+LINES:    6
+SHA256:   d50fb399dd56b261da0c0a8ea7aea6147a1cfb2b74c3b5de6ea71d1a1e154b51
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+namespace TermRacer.Rendering;
+
+public readonly record struct Cell(char Glyph, Rgb Foreground, Rgb Background)
+{
+    public const char UpperHalf = '\u2580';
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/CellBuffer.cs
+SIZE:     2.07 KB (2115 bytes)
+LINES:    79
+SHA256:   79ce78ee20de4678d9ece098b2f4129c6dda43b0cc66f92ccc099638c0225bc1
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+namespace TermRacer.Rendering;
+
+public sealed class CellBuffer(int width, int height)
+{
+    private Cell[] cells = new Cell[Math.Max(0, width) * Math.Max(0, height)];
+
+    public int Width { get; private set; } = Math.Max(0, width);
+
+    public int Height { get; private set; } = Math.Max(0, height);
+
+    public Cell this[int x, int y]
+    {
+        get => cells[y * Width + x];
+        set => cells[y * Width + x] = value;
+    }
+
+    public ReadOnlySpan<Cell> Row(int y) => cells.AsSpan(y * Width, Width);
+
+    public string RowText(int y)
+    {
+        var row = Row(y);
+        var glyphs = new char[row.Length];
+        for (var x = 0; x < row.Length; x++)
+        {
+            glyphs[x] = row[x].Glyph;
+        }
+
+        return new string(glyphs);
+    }
+
+    public bool Contains(int x, int y) => (uint)x < (uint)Width && (uint)y < (uint)Height;
+
+    public void Resize(int width, int height)
+    {
+        width = Math.Max(0, width);
+        height = Math.Max(0, height);
+        if (width == Width && height == Height)
+        {
+            return;
+        }
+
+        Width = width;
+        Height = height;
+        cells = new Cell[width * height];
+    }
+
+    public void Fill(Cell cell) => Array.Fill(cells, cell);
+
+    public void Fill(int x, int y, int width, int height, Cell cell)
+    {
+        var left = Math.Max(0, x);
+        var right = Math.Min(Width, x + width);
+        for (var row = Math.Max(0, y); row < Math.Min(Height, y + height); row++)
+        {
+            if (right > left)
+            {
+                cells.AsSpan(row * Width + left, right - left).Fill(cell);
+            }
+        }
+    }
+
+    public int Write(int x, int y, string text, Rgb foreground, Rgb background)
+    {
+        foreach (var glyph in text)
+        {
+            if (Contains(x, y))
+            {
+                cells[y * Width + x] = new Cell(glyph, foreground, background);
+            }
+
+            x++;
+        }
+
+        return x;
+    }
+
+    public int WriteCentered(int y, string text, Rgb foreground, Rgb background) =>
+        Write((Width - text.Length) / 2, y, text, foreground, background);
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/CellRun.cs
+SIZE:     0.10 KB (104 bytes)
+LINES:    3
+SHA256:   c2b0b795790b827e5b039d7c5fd258d960c55927b0f87f6705e4af73677720df
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+namespace TermRacer.Rendering;
+
+public readonly record struct CellRun(int Row, int Column, int Length);
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/ChaseCamera.cs
+SIZE:     1.30 KB (1332 bytes)
+LINES:    36
+SHA256:   33a840c4992a22708809de3ce5e184110d1b9746b74bc39d0e9590f77806d313
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using TermRacer.Core;
+
+namespace TermRacer.Rendering;
+
+public sealed class ChaseCamera(double metersPerPixel = 0.72, double leadSeconds = 0.85, double leadFraction = 0.3, double response = 2.8)
+{
+    private RaceSession? session;
+    private Vec2 lead;
+    private double time;
+
+    public Camera Frame(RaceSession race, int width, int height)
+    {
+        var desired = Desired(race, width, height);
+        if (!ReferenceEquals(race, session))
+        {
+            session = race;
+            lead = desired;
+            time = race.Time;
+        }
+
+        var elapsed = Math.Max(0, race.Time - time);
+        time = race.Time;
+        lead = Vec2.Lerp(lead, desired, 1 - Math.Exp(-response * elapsed));
+        var center = race.Car.Position + lead;
+        var snapped = new Vec2(Math.Round(center.X / metersPerPixel) * metersPerPixel, Math.Round(center.Y / metersPerPixel) * metersPerPixel);
+        return new Camera(snapped, metersPerPixel, width, height);
+    }
+
+    private Vec2 Desired(RaceSession race, int width, int height)
+    {
+        var target = race.Car.Velocity * leadSeconds;
+        var limitX = width * metersPerPixel * leadFraction;
+        var limitY = height * metersPerPixel * leadFraction;
+        return new Vec2(Math.Clamp(target.X, -limitX, limitX), Math.Clamp(target.Y, -limitY, limitY));
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/FrameDiff.cs
+SIZE:     1.43 KB (1463 bytes)
+LINES:    58
+SHA256:   64a865b7faf322cf62be7dab39460b266498f8c8d9e1f8478f2c0efe6d9bcbdb
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+namespace TermRacer.Rendering;
+
+public static class FrameDiff
+{
+    public static void Compute(CellBuffer previous, CellBuffer current, List<CellRun> runs)
+    {
+        runs.Clear();
+        if (previous.Width != current.Width || previous.Height != current.Height)
+        {
+            AppendFull(current, runs);
+            return;
+        }
+
+        for (var y = 0; y < current.Height; y++)
+        {
+            var before = previous.Row(y);
+            var after = current.Row(y);
+            var x = 0;
+            while (x < after.Length)
+            {
+                if (before[x] == after[x])
+                {
+                    x++;
+                    continue;
+                }
+
+                var start = x;
+                while (x < after.Length && before[x] != after[x])
+                {
+                    x++;
+                }
+
+                runs.Add(new CellRun(y, start, x - start));
+            }
+        }
+    }
+
+    public static void Full(CellBuffer current, List<CellRun> runs)
+    {
+        runs.Clear();
+        AppendFull(current, runs);
+    }
+
+    public static int CellCount(IEnumerable<CellRun> runs) => runs.Sum(run => run.Length);
+
+    private static void AppendFull(CellBuffer current, List<CellRun> runs)
+    {
+        if (current.Width == 0)
+        {
+            return;
+        }
+
+        for (var y = 0; y < current.Height; y++)
+        {
+            runs.Add(new CellRun(y, 0, current.Width));
+        }
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/Hud.cs
+SIZE:     5.34 KB (5472 bytes)
+LINES:    138
+SHA256:   cf596c99dd747287297b5236509acbb83d6324d73693305023730216fb9fb20f
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using System.Globalization;
+using TermRacer.Core;
+
+namespace TermRacer.Rendering;
+
+public static class Hud
+{
+    private static readonly (string Keys, string Action)[] Hints =
+    [
+        ("↑ W", "throttle"),
+        ("↓ S", "brake"),
+        ("← → A D", "steer"),
+        ("Tab", "autopilot"),
+        ("Esc", "quit"),
+    ];
+
+    public static void TopBar(CellBuffer target, RaceSession race)
+    {
+        target.Fill(0, 0, target.Width, 1, new Cell(' ', Palette.Cream, Palette.Navy));
+        var x = target.Write(1, 0, "TermRacer", Palette.Orange, Palette.Navy) + 3;
+        x = target.Write(x, 0, race.Mode == RaceMode.SingleLap ? "Single lap" : "Zen mode", Palette.Powder, Palette.Navy) + 3;
+        var laps = race.Laps;
+        x = Field(target, x, "Lap", race.Mode == RaceMode.SingleLap ? "1/1" : laps.CurrentLap.ToString(CultureInfo.InvariantCulture));
+        x = Field(target, x, "Time", laps.Phase == RacePhase.Waiting ? TimeFormat.Empty : TimeFormat.Lap(laps.CurrentLapTime(race.Time)));
+        if (race.Mode == RaceMode.Zen)
+        {
+            x = Field(target, x, "Last", TimeFormat.Lap(laps.LastLap));
+            x = Field(target, x, "Best", TimeFormat.Lap(laps.BestLap));
+        }
+
+        Field(target, x, "Speed", TimeFormat.Speed(race.Car.Speed));
+        var badge = race.AutopilotEngaged ? " Autopilot " : " Manual ";
+        target.Write(target.Width - badge.Length - 1, 0, badge, Palette.Navy, race.AutopilotEngaged ? Palette.Orange : Palette.Powder);
+    }
+
+    public static void BottomBar(CellBuffer target, RaceSession race)
+    {
+        var y = target.Height - 1;
+        target.Fill(0, y, target.Width, 1, new Cell(' ', Palette.Cream, Palette.Navy));
+        var x = 1;
+        foreach (var (keys, action) in Hints)
+        {
+            x = target.Write(x, y, keys, Palette.Powder, Palette.Navy) + 1;
+            x = target.Write(x, y, action, Palette.PowderDim, Palette.Navy) + 3;
+        }
+
+        var right = WriteRight(target, target.Width - 1, y, "Brake", race.Input.Brake > 0 ? Palette.Warning : Palette.PowderDim) - 2;
+        right = WriteRight(target, right, y, "Throttle", race.Input.Throttle > 0 ? Palette.Orange : Palette.PowderDim) - 2;
+        if (race.Surface == Surface.Grass)
+        {
+            WriteRight(target, right, y, "Off track", Palette.Orange);
+        }
+    }
+
+    public static void Banner(CellBuffer target, RaceSession race, int row)
+    {
+        var (text, background) = BannerText(race);
+        if (text is null)
+        {
+            return;
+        }
+
+        var padded = $"  {text}  ";
+        var foreground = background == Palette.Warning ? Palette.Cream : Palette.Navy;
+        target.Write((target.Width - padded.Length) / 2, row, padded, foreground, background);
+    }
+
+    public static void Box(CellBuffer target, int left, int top, int width, int height, Rgb border, Rgb background)
+    {
+        for (var x = left + 1; x < left + width - 1; x++)
+        {
+            target.Write(x, top, "─", border, background);
+            target.Write(x, top + height - 1, "─", border, background);
+        }
+
+        for (var y = top + 1; y < top + height - 1; y++)
+        {
+            target.Write(left, y, "│", border, background);
+            target.Write(left + width - 1, y, "│", border, background);
+        }
+
+        target.Write(left, top, "╭", border, background);
+        target.Write(left + width - 1, top, "╮", border, background);
+        target.Write(left, top + height - 1, "╰", border, background);
+        target.Write(left + width - 1, top + height - 1, "╯", border, background);
+    }
+
+    public static void KeyHints(CellBuffer target, int y, (string Keys, string Action)[] hints, Rgb background)
+    {
+        var width = hints.Sum(hint => hint.Keys.Length + 1 + hint.Action.Length) + 5 * (hints.Length - 1);
+        var x = (target.Width - width) / 2;
+        foreach (var (keys, action) in hints)
+        {
+            x = target.Write(x, y, keys, Palette.Powder, background) + 1;
+            x = target.Write(x, y, action, Palette.PowderDim, background) + 5;
+        }
+    }
+
+    private static int Field(CellBuffer target, int x, string label, string value)
+    {
+        x = target.Write(x, 0, label, Palette.PowderDim, Palette.Navy) + 1;
+        return target.Write(x, 0, value, Palette.Cream, Palette.Navy) + 3;
+    }
+
+    private static int WriteRight(CellBuffer target, int right, int y, string text, Rgb color)
+    {
+        var x = right - text.Length;
+        target.Write(x, y, text, color, Palette.Navy);
+        return x;
+    }
+
+    private static (string? Text, Rgb Background) BannerText(RaceSession race)
+    {
+        if (race.WrongWay)
+        {
+            return ("Wrong way", Palette.Warning);
+        }
+
+        if (race.Laps.Phase == RacePhase.Waiting)
+        {
+            return ("Cross the line to start the clock", Palette.Powder);
+        }
+
+        if (race.Time - race.LastEventTime < 3)
+        {
+            switch (race.LastEvent)
+            {
+                case LapEvent.Started:
+                    return ("Clock running", Palette.Powder);
+                case LapEvent.Completed when race.Laps.LastLap is { } lap:
+                    var best = race.Laps.Laps.Count > 1 && race.Laps.BestLap == lap ? "  new best" : string.Empty;
+                    return ($"Lap {race.Laps.Laps.Count}  {TimeFormat.Lap(lap)}{best}", Palette.Orange);
+            }
+        }
+
+        return (null, default);
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/Palette.cs
+SIZE:     1.20 KB (1225 bytes)
+LINES:    24
+SHA256:   5e730ff8d2ecc944bb8f0b8544d08faaefd928edc189bce7b1e511f7f67da772
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+namespace TermRacer.Rendering;
+
+public static class Palette
+{
+    public static readonly Rgb Navy = Rgb.Hex(0x0E1B2C);
+    public static readonly Rgb NavyDeep = Rgb.Hex(0x060D16);
+    public static readonly Rgb Powder = Rgb.Hex(0x8DC3E8);
+    public static readonly Rgb PowderDim = Rgb.Hex(0x5E83A0);
+    public static readonly Rgb Orange = Rgb.Hex(0xF37A1F);
+    public static readonly Rgb Cream = Rgb.Hex(0xF1EEE6);
+    public static readonly Rgb Warning = Rgb.Hex(0xD9383A);
+    public static readonly Rgb Asphalt = Rgb.Hex(0x4E5257);
+    public static readonly Rgb GrassLight = Rgb.Hex(0x4B8B44);
+    public static readonly Rgb GrassDark = Rgb.Hex(0x427E3C);
+    public static readonly Rgb Forest = Rgb.Hex(0x1D3D25);
+    public static readonly Rgb BarrierLight = Rgb.Hex(0xD3D7DB);
+    public static readonly Rgb BarrierDark = Rgb.Hex(0x7C848D);
+    public static readonly Rgb CurbRed = Rgb.Hex(0xC8322C);
+    public static readonly Rgb CurbWhite = Rgb.Hex(0xEEECE6);
+    public static readonly Rgb CheckerDark = Rgb.Hex(0x16181B);
+    public static readonly Rgb CheckerLight = Rgb.Hex(0xF4F4F2);
+    public static readonly Rgb Cockpit = Rgb.Hex(0x1A2433);
+    public static readonly Rgb MapTrack = Rgb.Hex(0xD9DEE3);
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/PixelCanvas.cs
+SIZE:     6.32 KB (6472 bytes)
+LINES:    211
+SHA256:   132e4a8cd2646157a0e8ad2454c4cf0e95dcc71448bbf18c3870f17fd12f3b3b
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using TermRacer.Core;
+
+namespace TermRacer.Rendering;
+
+public sealed class PixelCanvas(int width, int height)
+{
+    private Rgb[] pixels = new Rgb[Math.Max(0, width) * Math.Max(0, height)];
+
+    private interface ISpanPainter
+    {
+        void Paint(Span<Rgb> span);
+    }
+
+    public int Width { get; private set; } = Math.Max(0, width);
+
+    public int Height { get; private set; } = Math.Max(0, height);
+
+    public Rgb this[int x, int y]
+    {
+        get => pixels[y * Width + x];
+        set => pixels[y * Width + x] = value;
+    }
+
+    public void Resize(int width, int height)
+    {
+        width = Math.Max(0, width);
+        height = Math.Max(0, height);
+        if (width == Width && height == Height)
+        {
+            return;
+        }
+
+        Width = width;
+        Height = height;
+        pixels = new Rgb[width * height];
+    }
+
+    public void Clear(Rgb color) => Array.Fill(pixels, color);
+
+    public void Plot(int x, int y, Rgb color)
+    {
+        if ((uint)x < (uint)Width && (uint)y < (uint)Height)
+        {
+            pixels[y * Width + x] = color;
+        }
+    }
+
+    public void FillRect(int x, int y, int width, int height, Rgb color)
+    {
+        var left = Math.Max(0, x);
+        var right = Math.Min(Width, x + width);
+        for (var row = Math.Max(0, y); row < Math.Min(Height, y + height); row++)
+        {
+            if (right > left)
+            {
+                pixels.AsSpan(row * Width + left, right - left).Fill(color);
+            }
+        }
+    }
+
+    public void Darken(int x, int y, int width, int height, double factor)
+    {
+        var left = Math.Max(0, x);
+        var right = Math.Min(Width, x + width);
+        for (var row = Math.Max(0, y); row < Math.Min(Height, y + height); row++)
+        {
+            for (var column = left; column < right; column++)
+            {
+                pixels[row * Width + column] = pixels[row * Width + column].Scale(factor);
+            }
+        }
+    }
+
+    public void FillPolygon(ReadOnlySpan<Vec2> vertices, Rgb color) => Rasterize(vertices, new SolidPainter(color));
+
+    public void ShadePolygon(ReadOnlySpan<Vec2> vertices, double factor) => Rasterize(vertices, new ShadePainter(factor));
+
+    public void DrawLine(Vec2 from, Vec2 to, Rgb color)
+    {
+        var delta = to - from;
+        var steps = (int)Math.Ceiling(Math.Max(Math.Abs(delta.X), Math.Abs(delta.Y)));
+        for (var i = 0; i <= steps; i++)
+        {
+            var point = steps == 0 ? from : from + delta * ((double)i / steps);
+            Plot((int)Math.Floor(point.X), (int)Math.Floor(point.Y), color);
+        }
+    }
+
+    public void Blit(PixelCanvas source, int x, int y)
+    {
+        for (var row = 0; row < source.Height; row++)
+        {
+            var targetRow = y + row;
+            if ((uint)targetRow >= (uint)Height)
+            {
+                continue;
+            }
+
+            for (var column = 0; column < source.Width; column++)
+            {
+                var targetColumn = x + column;
+                if ((uint)targetColumn < (uint)Width)
+                {
+                    pixels[targetRow * Width + targetColumn] = source.pixels[row * source.Width + column];
+                }
+            }
+        }
+    }
+
+    public void ComposeInto(CellBuffer target, int column, int row)
+    {
+        for (var cellRow = 0; cellRow * 2 < Height; cellRow++)
+        {
+            var y = row + cellRow;
+            if ((uint)y >= (uint)target.Height)
+            {
+                continue;
+            }
+
+            var topOffset = cellRow * 2 * Width;
+            var bottomOffset = cellRow * 2 + 1 < Height ? topOffset + Width : topOffset;
+            for (var cellColumn = 0; cellColumn < Width; cellColumn++)
+            {
+                var x = column + cellColumn;
+                if ((uint)x >= (uint)target.Width)
+                {
+                    continue;
+                }
+
+                var top = pixels[topOffset + cellColumn];
+                var bottom = pixels[bottomOffset + cellColumn];
+                target[x, y] = top == bottom ? new Cell(' ', top, top) : new Cell(Cell.UpperHalf, top, bottom);
+            }
+        }
+    }
+
+    private void Rasterize<TPainter>(ReadOnlySpan<Vec2> vertices, TPainter painter)
+        where TPainter : struct, ISpanPainter
+    {
+        if (vertices.Length < 3 || Width == 0 || Height == 0)
+        {
+            return;
+        }
+
+        var minY = double.MaxValue;
+        var maxY = double.MinValue;
+        foreach (var vertex in vertices)
+        {
+            minY = Math.Min(minY, vertex.Y);
+            maxY = Math.Max(maxY, vertex.Y);
+        }
+
+        var firstRow = Math.Max(0, (int)Math.Ceiling(minY - 0.5));
+        var lastRow = Math.Min(Height - 1, (int)Math.Ceiling(maxY - 0.5) - 1);
+        if (firstRow > lastRow)
+        {
+            return;
+        }
+
+        Span<double> crossings = vertices.Length <= 64 ? stackalloc double[vertices.Length] : new double[vertices.Length];
+        for (var y = firstRow; y <= lastRow; y++)
+        {
+            var center = y + 0.5;
+            var count = 0;
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var a = vertices[i];
+                var b = vertices[i + 1 == vertices.Length ? 0 : i + 1];
+                if (a.Y > b.Y)
+                {
+                    (a, b) = (b, a);
+                }
+
+                if (center < a.Y || center >= b.Y)
+                {
+                    continue;
+                }
+
+                crossings[count++] = a.X + (center - a.Y) * (b.X - a.X) / (b.Y - a.Y);
+            }
+
+            var row = crossings[..count];
+            row.Sort();
+            for (var k = 0; k + 1 < count; k += 2)
+            {
+                var from = Math.Max(0, (int)Math.Ceiling(row[k] - 0.5));
+                var to = Math.Min(Width, (int)Math.Ceiling(row[k + 1] - 0.5));
+                if (to > from)
+                {
+                    painter.Paint(pixels.AsSpan(y * Width + from, to - from));
+                }
+            }
+        }
+    }
+
+    private readonly record struct SolidPainter(Rgb Color) : ISpanPainter
+    {
+        public void Paint(Span<Rgb> span) => span.Fill(Color);
+    }
+
+    private readonly record struct ShadePainter(double Factor) : ISpanPainter
+    {
+        public void Paint(Span<Rgb> span)
+        {
+            foreach (ref var pixel in span)
+            {
+                pixel = pixel.Scale(Factor);
+            }
+        }
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/PixelFont.cs
+SIZE:     2.70 KB (2761 bytes)
+LINES:    65
+SHA256:   5e7b40e244833963fadb6c5c4002ac525b602404fa10b0b6341ff65083830c8d
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+namespace TermRacer.Rendering;
+
+public static class PixelFont
+{
+    public const int GlyphHeight = 7;
+
+    private static readonly Dictionary<char, string[]> Glyphs = new()
+    {
+        ['A'] = [".###.", "#...#", "#...#", "#####", "#...#", "#...#", "#...#"],
+        ['C'] = [".###.", "#...#", "#....", "#....", "#....", "#...#", ".###."],
+        ['E'] = ["#####", "#....", "#....", "####.", "#....", "#....", "#####"],
+        ['M'] = ["#...#", "##.##", "#.#.#", "#.#.#", "#...#", "#...#", "#...#"],
+        ['R'] = ["####.", "#...#", "#...#", "####.", "#.#..", "#..#.", "#...#"],
+        ['T'] = ["#####", "..#..", "..#..", "..#..", "..#..", "..#..", "..#.."],
+        ['0'] = [".###.", "#...#", "#..##", "#.#.#", "##..#", "#...#", ".###."],
+        ['1'] = ["..#..", ".##..", "..#..", "..#..", "..#..", "..#..", ".###."],
+        ['2'] = [".###.", "#...#", "....#", "...#.", "..#..", ".#...", "#####"],
+        ['3'] = ["#####", "...#.", "..#..", "...#.", "....#", "#...#", ".###."],
+        ['4'] = ["...#.", "..##.", ".#.#.", "#..#.", "#####", "...#.", "...#."],
+        ['5'] = ["#####", "#....", "####.", "....#", "....#", "#...#", ".###."],
+        ['6'] = ["..##.", ".#...", "#....", "####.", "#...#", "#...#", ".###."],
+        ['7'] = ["#####", "....#", "...#.", "..#..", ".#...", ".#...", ".#..."],
+        ['8'] = [".###.", "#...#", "#...#", ".###.", "#...#", "#...#", ".###."],
+        ['9'] = [".###.", "#...#", "#...#", ".####", "....#", "...#.", ".##.."],
+        [':'] = [".", ".", "#", ".", "#", ".", "."],
+        ['.'] = [".", ".", ".", ".", ".", ".", "#"],
+        ['-'] = ["....", "....", "....", "####", "....", "....", "...."],
+    };
+
+    public static int Measure(string text, int scale)
+    {
+        var width = 0;
+        foreach (var character in text)
+        {
+            width += ((Glyphs.TryGetValue(char.ToUpperInvariant(character), out var rows) ? rows[0].Length : 3) + 1) * scale;
+        }
+
+        return Math.Max(0, width - scale);
+    }
+
+    public static void Draw(PixelCanvas canvas, string text, int x, int y, int scale, Rgb color)
+    {
+        foreach (var character in text)
+        {
+            if (!Glyphs.TryGetValue(char.ToUpperInvariant(character), out var rows))
+            {
+                x += 4 * scale;
+                continue;
+            }
+
+            for (var row = 0; row < rows.Length; row++)
+            {
+                for (var column = 0; column < rows[row].Length; column++)
+                {
+                    if (rows[row][column] == '#')
+                    {
+                        canvas.FillRect(x + column * scale, y + row * scale, scale, scale, color);
+                    }
+                }
+            }
+
+            x += (rows[0].Length + 1) * scale;
+        }
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/Rgb.cs
+SIZE:     0.57 KB (586 bytes)
+LINES:    13
+SHA256:   174900cc543b0a2e173413dc11120e25b77b53a6b3b94a9595597fd5dc0a5c5d
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+namespace TermRacer.Rendering;
+
+public readonly record struct Rgb(byte R, byte G, byte B)
+{
+    public static Rgb Hex(uint value) => new((byte)(value >> 16), (byte)(value >> 8), (byte)value);
+
+    public static Rgb Lerp(Rgb from, Rgb to, double t) =>
+        new(Channel(from.R + (to.R - from.R) * t), Channel(from.G + (to.G - from.G) * t), Channel(from.B + (to.B - from.B) * t));
+
+    public Rgb Scale(double factor) => new(Channel(R * factor), Channel(G * factor), Channel(B * factor));
+
+    private static byte Channel(double value) => (byte)Math.Clamp(Math.Round(value), 0, 255);
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/SceneRenderer.cs
+SIZE:     6.58 KB (6741 bytes)
+LINES:    147
+SHA256:   b88674aa42cd125615a86e89833944c3f81eab9e0d34502c8ef847d193a49b19
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using System.Globalization;
+using TermRacer.Core;
+
+namespace TermRacer.Rendering;
+
+public sealed class SceneRenderer(Track track)
+{
+    public const int MinColumns = 120;
+    public const int MinRows = 40;
+
+    private const int MapColumns = 30;
+    private const int MapRows = 11;
+    private const int PanelWidth = 52;
+    private const int PanelHeight = 12;
+
+    private static readonly (string Keys, string Action)[] MenuHints = [("↑ ↓", "choose"), ("Enter", "start"), ("Esc", "quit")];
+    private static readonly (string Keys, string Action)[] ResultHints = [("Enter", "back to menu"), ("Esc", "quit")];
+
+    private readonly TrackGeometry geometry = new(track);
+    private readonly PixelCanvas canvas = new(0, 0);
+    private readonly PixelCanvas preview = new(0, 0);
+    private readonly ChaseCamera chase = new();
+
+    public static bool Fits(int columns, int rows) => columns >= MinColumns && rows >= MinRows;
+
+    public void Render(Game game, CellBuffer target)
+    {
+        if (target.Width == 0 || target.Height == 0)
+        {
+            return;
+        }
+
+        if (!Fits(target.Width, target.Height))
+        {
+            RenderTooSmall(target);
+            return;
+        }
+
+        if (game.Screen == GameScreen.Menu)
+        {
+            RenderMenu(game, target);
+            return;
+        }
+
+        RenderRace(game.ActiveSession, target, game.Screen == GameScreen.Results);
+    }
+
+    private static void RenderTooSmall(CellBuffer target)
+    {
+        target.Fill(new Cell(' ', Palette.Cream, Palette.Navy));
+        var top = Math.Max(0, target.Height / 2 - 2);
+        target.WriteCentered(top, "Terminal too small", Palette.Orange, Palette.Navy);
+        var size = string.Create(CultureInfo.InvariantCulture, $"{target.Width} × {target.Height} now, {MinColumns} × {MinRows} needed");
+        target.WriteCentered(top + 2, size, Palette.Cream, Palette.Navy);
+        target.WriteCentered(top + 3, "Resize the window to continue, or press Esc to quit", Palette.PowderDim, Palette.Navy);
+    }
+
+    private static Rgb MenuBackground(int pixelRow, int height) => Rgb.Lerp(Palette.Navy, Palette.NavyDeep, (double)pixelRow / Math.Max(1, height));
+
+    private void RenderMenu(Game game, CellBuffer target)
+    {
+        canvas.Resize(target.Width, target.Height * 2);
+        for (var y = 0; y < canvas.Height; y++)
+        {
+            canvas.FillRect(0, y, canvas.Width, 1, MenuBackground(y, canvas.Height));
+        }
+
+        const string title = "TERMRACER";
+        const int scale = 2;
+        var titleWidth = PixelFont.Measure(title, scale);
+        var titleX = (canvas.Width - titleWidth) / 2;
+        PixelFont.Draw(canvas, title, titleX, 4, scale, Palette.Powder);
+        canvas.FillRect(titleX, 4 + PixelFont.GlyphHeight * scale + 3, titleWidth, 2, Palette.Orange);
+
+        var previewTop = 26;
+        var previewHeight = canvas.Height - 24 - previewTop;
+        var bounds = track.BoundsMax - track.BoundsMin;
+        var previewWidth = Math.Min(canvas.Width - 8, (int)Math.Round(previewHeight * bounds.X / bounds.Y));
+        preview.Resize(previewWidth, previewHeight);
+        var camera = Camera.Fit(track.BoundsMin, track.BoundsMax, previewWidth, previewHeight, 1);
+        WorldPainter.PaintTrack(preview, camera, geometry, false);
+        WorldPainter.PaintCar(preview, camera, game.Demo.Car, game.Spec, true, 4, false);
+        canvas.Blit(preview, (canvas.Width - previewWidth) / 2, previewTop);
+        canvas.ComposeInto(target, 0, 0);
+
+        var nameRow = previewTop / 2 - 1;
+        var name = string.Create(CultureInfo.InvariantCulture, $"{track.Name}   {track.Length / 1000:0.00} km");
+        target.WriteCentered(nameRow, name, Palette.PowderDim, MenuBackground(nameRow * 2, canvas.Height));
+
+        var optionsRow = target.Height - 9;
+        MenuOption(target, optionsRow, "Single lap", "One timed lap. The clock starts when you cross the line.", game.SelectedMode == RaceMode.SingleLap);
+        MenuOption(target, optionsRow + 2, "Zen mode", "Endless laps with lap times. Leave whenever you like.", game.SelectedMode == RaceMode.Zen);
+        var hintRow = target.Height - 3;
+        Hud.KeyHints(target, hintRow, MenuHints, MenuBackground(hintRow * 2, canvas.Height));
+    }
+
+    private static void MenuOption(CellBuffer target, int row, string name, string description, bool selected)
+    {
+        var background = MenuBackground(row * 2, target.Height * 2);
+        const int nameWidth = 14;
+        var width = 2 + nameWidth + description.Length;
+        var x = (target.Width - width) / 2;
+        x = target.Write(x, row, selected ? "▸ " : "  ", Palette.Orange, background);
+        x = target.Write(x, row, name.PadRight(nameWidth), selected ? Palette.Orange : Palette.PowderDim, background);
+        target.Write(x, row, description, selected ? Palette.Cream : Palette.PowderDim, background);
+    }
+
+    private void RenderRace(RaceSession race, CellBuffer target, bool finished)
+    {
+        var worldRows = target.Height - 2;
+        canvas.Resize(target.Width, worldRows * 2);
+        var camera = chase.Frame(race, canvas.Width, canvas.Height);
+        WorldPainter.PaintTrack(canvas, camera, geometry, true);
+        WorldPainter.PaintCar(canvas, camera, race.Car, race.Spec, race.AutopilotEngaged, 1, true);
+        WorldPainter.PaintMinimap(canvas, canvas.Width - MapColumns - 2, 2, MapColumns, MapRows * 2, geometry, race);
+
+        var left = (target.Width - PanelWidth) / 2;
+        var top = 1 + (worldRows - PanelHeight) / 2;
+        var time = TimeFormat.Lap(race.Laps.LastLap);
+        if (finished)
+        {
+            canvas.FillRect(left, (top - 1) * 2, PanelWidth, PanelHeight * 2, Palette.Navy);
+            var digitsWidth = PixelFont.Measure(time, 1);
+            PixelFont.Draw(canvas, time, left + (PanelWidth - digitsWidth) / 2, (top + 3) * 2, 1, Palette.Orange);
+        }
+
+        canvas.ComposeInto(target, 0, 1);
+        Hud.TopBar(target, race);
+        Hud.BottomBar(target, race);
+        if (!finished)
+        {
+            Hud.Banner(target, race, 2);
+            return;
+        }
+
+        Hud.Box(target, left, top, PanelWidth, PanelHeight, Palette.Powder, Palette.Navy);
+        target.Write(left + (PanelWidth - 12) / 2, top + 2, "Lap complete", Palette.Cream, Palette.Navy);
+        target.Write(left + (PanelWidth - time.Length) / 2, top + 9, time, Palette.PowderDim, Palette.Navy);
+        var hints = new CellBuffer(PanelWidth - 2, 1);
+        hints.Fill(new Cell(' ', Palette.Cream, Palette.Navy));
+        Hud.KeyHints(hints, 0, ResultHints, Palette.Navy);
+        for (var x = 0; x < hints.Width; x++)
+        {
+            target[left + 1 + x, top + PanelHeight - 2] = hints[x, 0];
+        }
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/TermRacer.Rendering.csproj
+SIZE:     0.15 KB (149 bytes)
+LINES:    5
+SHA256:   f1bec8e6c572054897b0a8bae871a7be979bac111a5512cfc910b065bcbd7eee
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\TermRacer.Core\TermRacer.Core.csproj" />
+  </ItemGroup>
+</Project>
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/TimeFormat.cs
+SIZE:     0.73 KB (748 bytes)
+LINES:    23
+SHA256:   fe750bce3c8c224d88ddd1822f56e83fcde912e22ca563a00b0b3e06f99bb72c
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using System.Globalization;
+
+namespace TermRacer.Rendering;
+
+public static class TimeFormat
+{
+    public const string Empty = "-:--.---";
+
+    public static string Lap(double? seconds)
+    {
+        if (seconds is not { } value || double.IsNaN(value) || double.IsInfinity(value) || value < 0)
+        {
+            return Empty;
+        }
+
+        var milliseconds = (long)Math.Round(value * 1000, MidpointRounding.AwayFromZero);
+        var rest = milliseconds % 60000;
+        return string.Create(CultureInfo.InvariantCulture, $"{milliseconds / 60000}:{rest / 1000:00}.{rest % 1000:000}");
+    }
+
+    public static string Speed(double metersPerSecond) =>
+        string.Create(CultureInfo.InvariantCulture, $"{metersPerSecond * 3.6:0} km/h");
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/TrackGeometry.cs
+SIZE:     3.38 KB (3456 bytes)
+LINES:    102
+SHA256:   b998bede69008f92f7cb1888f67717559d69e58884869e631d958bc9a9e60777
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using TermRacer.Core;
+
+namespace TermRacer.Rendering;
+
+public sealed class TrackGeometry
+{
+    private const double CurbCurvature = 1 / 160.0;
+
+    public TrackGeometry(Track track)
+    {
+        Track = track;
+        var wall = track.WallOffset;
+        Runoff = Band(track, -wall, wall, i => i / 6 % 2 == 0 ? Palette.GrassLight : Palette.GrassDark);
+        Barriers = [.. Band(track, -wall - 1.2, -wall, BarrierColor), .. Band(track, wall, wall + 1.2, BarrierColor)];
+        Asphalt = Band(track, -track.HalfWidth, track.HalfWidth, _ => Palette.Asphalt);
+        Curbs = [.. Curb(track, -1), .. Curb(track, 1)];
+        Checker = BuildChecker(track);
+    }
+
+    public Track Track { get; }
+
+    public WorldQuad[] Runoff { get; }
+
+    public WorldQuad[] Barriers { get; }
+
+    public WorldQuad[] Asphalt { get; }
+
+    public WorldQuad[] Curbs { get; }
+
+    public WorldQuad[] Checker { get; }
+
+    private static Rgb BarrierColor(int index) => index / 2 % 2 == 0 ? Palette.BarrierLight : Palette.BarrierDark;
+
+    private static WorldQuad[] Band(Track track, double inner, double outer, Func<int, Rgb> color)
+    {
+        var count = track.Count;
+        var near = new Vec2[count];
+        var far = new Vec2[count];
+        for (var i = 0; i < count; i++)
+        {
+            near[i] = track.Point(i) + track.Normal(i) * inner;
+            far[i] = track.Point(i) + track.Normal(i) * outer;
+        }
+
+        var quads = new WorldQuad[count];
+        for (var i = 0; i < count; i++)
+        {
+            var j = (i + 1) % count;
+            quads[i] = new WorldQuad(near[i], near[j], far[j], far[i], color(i));
+        }
+
+        return quads;
+    }
+
+    private static IEnumerable<WorldQuad> Curb(Track track, int side)
+    {
+        var inner = (track.HalfWidth - 0.4) * side;
+        var outer = (track.HalfWidth + 1.1) * side;
+        for (var i = 0; i < track.Count; i++)
+        {
+            if (Math.Abs(track.Curvature(i)) < CurbCurvature && Math.Abs(track.Curvature(i + 1)) < CurbCurvature)
+            {
+                continue;
+            }
+
+            yield return new WorldQuad(
+                track.Point(i) + track.Normal(i) * inner,
+                track.Point(i + 1) + track.Normal(i + 1) * inner,
+                track.Point(i + 1) + track.Normal(i + 1) * outer,
+                track.Point(i) + track.Normal(i) * outer,
+                i % 2 == 0 ? Palette.CurbRed : Palette.CurbWhite);
+        }
+    }
+
+    private static WorldQuad[] BuildChecker(Track track)
+    {
+        const int columns = 10;
+        var origin = track.Point(0);
+        var along = track.Tangent(0);
+        var across = track.Normal(0);
+        var size = 2 * track.HalfWidth / columns;
+        var quads = new List<WorldQuad>();
+        for (var row = 0; row < 2; row++)
+        {
+            for (var column = 0; column < columns; column++)
+            {
+                var a0 = (row - 1) * size;
+                var a1 = row * size;
+                var b0 = -track.HalfWidth + column * size;
+                var b1 = b0 + size;
+                quads.Add(new WorldQuad(
+                    origin + along * a0 + across * b0,
+                    origin + along * a1 + across * b0,
+                    origin + along * a1 + across * b1,
+                    origin + along * a0 + across * b1,
+                    (row + column) % 2 == 0 ? Palette.CheckerLight : Palette.CheckerDark));
+            }
+        }
+
+        return [.. quads];
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/WorldPainter.cs
+SIZE:     4.12 KB (4221 bytes)
+LINES:    99
+SHA256:   ddbdb968434ae6bd2b7687df13ee2b2e004e02ec20c815205db681a73b0bdc34
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using TermRacer.Core;
+
+namespace TermRacer.Rendering;
+
+public static class WorldPainter
+{
+    private static readonly Vec2[] Body = [new(0.5, -0.3), new(0.5, 0.3), new(0.3, 0.5), new(-0.5, 0.5), new(-0.5, -0.5), new(0.3, -0.5)];
+    private static readonly Vec2[] Nose = [new(0.5, -0.3), new(0.5, 0.3), new(0.3, 0.5), new(0.22, 0.5), new(0.22, -0.5), new(0.3, -0.5)];
+    private static readonly Vec2[] Cabin = [new(0.1, -0.3), new(0.1, 0.3), new(-0.24, 0.3), new(-0.24, -0.3)];
+
+    public static void PaintTrack(PixelCanvas canvas, Camera camera, TrackGeometry geometry, bool detailed)
+    {
+        canvas.Clear(Palette.Forest);
+        Paint(canvas, camera, geometry.Runoff, detailed ? null : Palette.GrassDark);
+        if (detailed)
+        {
+            Paint(canvas, camera, geometry.Barriers, null);
+        }
+
+        Paint(canvas, camera, geometry.Asphalt, null);
+        if (detailed)
+        {
+            Paint(canvas, camera, geometry.Curbs, null);
+            Paint(canvas, camera, geometry.Checker, null);
+            return;
+        }
+
+        var track = geometry.Track;
+        var across = track.Normal(0) * track.HalfWidth;
+        canvas.DrawLine(camera.ToPixel(track.Point(0) - across), camera.ToPixel(track.Point(0) + across), Palette.Cream);
+    }
+
+    public static void PaintCar(PixelCanvas canvas, Camera camera, in CarState car, CarSpec spec, bool autopilot, double scale, bool shadow)
+    {
+        Span<Vec2> corners = stackalloc Vec2[Body.Length];
+        if (shadow)
+        {
+            Shape(corners, Body, camera, car, spec, scale, new Vec2(0.5, 0.6));
+            canvas.ShadePolygon(corners, 0.55);
+        }
+
+        Shape(corners, Body, camera, car, spec, scale, Vec2.Zero);
+        canvas.FillPolygon(corners, Palette.Powder);
+        Shape(corners, Nose, camera, car, spec, scale, Vec2.Zero);
+        canvas.FillPolygon(corners, Palette.Orange);
+        var cabin = corners[..Cabin.Length];
+        Shape(cabin, Cabin, camera, car, spec, scale, Vec2.Zero);
+        canvas.FillPolygon(cabin, autopilot ? Palette.Cream : Palette.Cockpit);
+    }
+
+    public static void PaintMinimap(PixelCanvas canvas, int x, int y, int width, int height, TrackGeometry geometry, RaceSession race)
+    {
+        canvas.Darken(x, y, width, height, 0.35);
+        var track = geometry.Track;
+        var camera = Camera.Fit(track.BoundsMin, track.BoundsMax, width, height, 1.5);
+        var origin = new Vec2(x, y);
+        const int stride = 3;
+        for (var i = 0; i < track.Count; i += stride)
+        {
+            canvas.DrawLine(camera.ToPixel(track.Point(i)) + origin, camera.ToPixel(track.Point(Math.Min(i + stride, track.Count))) + origin, Palette.MapTrack);
+        }
+
+        var start = camera.ToPixel(track.Point(0)) + origin;
+        canvas.Plot((int)Math.Floor(start.X), (int)Math.Floor(start.Y), Palette.Powder);
+        var car = camera.ToPixel(race.Car.Position) + origin;
+        canvas.FillRect((int)Math.Floor(car.X - 0.5), (int)Math.Floor(car.Y - 0.5), 2, 2, Palette.Orange);
+    }
+
+    private static void Paint(PixelCanvas canvas, Camera camera, WorldQuad[] quads, Rgb? color)
+    {
+        var low = camera.WorldMin;
+        var high = camera.WorldMax;
+        Span<Vec2> corners = stackalloc Vec2[4];
+        foreach (var quad in quads)
+        {
+            if (quad.Max.X < low.X || quad.Min.X > high.X || quad.Max.Y < low.Y || quad.Min.Y > high.Y)
+            {
+                continue;
+            }
+
+            corners[0] = camera.ToPixel(quad.A);
+            corners[1] = camera.ToPixel(quad.B);
+            corners[2] = camera.ToPixel(quad.C);
+            corners[3] = camera.ToPixel(quad.D);
+            canvas.FillPolygon(corners, color ?? quad.Color);
+        }
+    }
+
+    private static void Shape(Span<Vec2> output, ReadOnlySpan<Vec2> shape, Camera camera, in CarState car, CarSpec spec, double scale, Vec2 shift)
+    {
+        var forward = car.Forward;
+        var along = forward * (spec.Length * scale);
+        var across = forward.Perpendicular * (spec.Width * scale);
+        for (var i = 0; i < shape.Length; i++)
+        {
+            output[i] = camera.ToPixel(car.Position + shift + along * shape[i].X + across * shape[i].Y);
+        }
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Rendering/WorldQuad.cs
+SIZE:     0.69 KB (702 bytes)
+LINES:    31
+SHA256:   e32717c2a426cef44c9605d5829d94c45c30696d62c21d29b93e537089082a2a
+MODIFIED: 2026-09-27 16:43:07 (UTC)
+================================================================================
+
+using TermRacer.Core;
+
+namespace TermRacer.Rendering;
+
+public readonly struct WorldQuad
+{
+    public WorldQuad(Vec2 a, Vec2 b, Vec2 c, Vec2 d, Rgb color)
+    {
+        A = a;
+        B = b;
+        C = c;
+        D = d;
+        Color = color;
+        Min = new Vec2(Math.Min(Math.Min(a.X, b.X), Math.Min(c.X, d.X)), Math.Min(Math.Min(a.Y, b.Y), Math.Min(c.Y, d.Y)));
+        Max = new Vec2(Math.Max(Math.Max(a.X, b.X), Math.Max(c.X, d.X)), Math.Max(Math.Max(a.Y, b.Y), Math.Max(c.Y, d.Y)));
+    }
+
+    public Vec2 A { get; }
+
+    public Vec2 B { get; }
+
+    public Vec2 C { get; }
+
+    public Vec2 D { get; }
+
+    public Rgb Color { get; }
+
+    public Vec2 Min { get; }
+
+    public Vec2 Max { get; }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Tui/GameView.cs
+SIZE:     3.50 KB (3583 bytes)
+LINES:    142
+SHA256:   fbb925be0e529a0b2617db83643213fe1c9651fb1978d9d06cf5ae49b8488003
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using System.Diagnostics;
+using Terminal.Gui.App;
+using Terminal.Gui.Input;
+using Terminal.Gui.ViewBase;
+using Terminal.Gui.Views;
+using TermRacer.Core;
+using TermRacer.Rendering;
+using TuiAttribute = Terminal.Gui.Drawing.Attribute;
+
+namespace TermRacer.Tui;
+
+internal sealed class GameView : Runnable
+{
+    private static readonly TimeSpan TickInterval = TimeSpan.FromMilliseconds(15);
+
+    private readonly Game game;
+    private readonly SceneRenderer renderer;
+    private readonly Stopwatch stopwatch = Stopwatch.StartNew();
+    private readonly List<CellRun> runs = [];
+    private CellBuffer front = new(0, 0);
+    private CellBuffer back = new(0, 0);
+    private bool fullRedraw = true;
+
+    public GameView(IApplication app, Game game)
+    {
+        this.game = game;
+        renderer = new SceneRenderer(game.Track);
+        Title = "TermRacer";
+        app.ScreenChanged += (_, _) => fullRedraw = true;
+        if (app.Driver is { } driver)
+        {
+            driver.ClearedContents += (_, _) => fullRedraw = true;
+        }
+
+        app.AddTimeout(TickInterval, Tick);
+    }
+
+    protected override bool OnClearingViewport() => true;
+
+    protected override bool OnDrawingText(DrawContext? context) => true;
+
+    protected override bool OnDrawingContent(DrawContext? context)
+    {
+        var width = Viewport.Width;
+        var height = Viewport.Height;
+        if (width <= 0 || height <= 0)
+        {
+            return true;
+        }
+
+        if (back.Width != width || back.Height != height)
+        {
+            back.Resize(width, height);
+            front.Resize(width, height);
+            fullRedraw = true;
+        }
+
+        renderer.Render(game, back);
+        if (fullRedraw)
+        {
+            FrameDiff.Full(back, runs);
+        }
+        else
+        {
+            FrameDiff.Compute(front, back, runs);
+        }
+
+        fullRedraw = false;
+        WriteRuns();
+        (front, back) = (back, front);
+        return true;
+    }
+
+    protected override bool OnKeyDown(Key key)
+    {
+        if (KeyMap.Resolve(key) is not { } gameKey)
+        {
+            return false;
+        }
+
+        if (key.EventType == KeyEventType.Repeat && gameKey is GameKey.Confirm or GameKey.ToggleAutopilot)
+        {
+            return true;
+        }
+
+        game.Press(gameKey);
+        if (game.ExitRequested)
+        {
+            RequestStop();
+        }
+
+        return true;
+    }
+
+    protected override bool OnKeyUp(Key key)
+    {
+        if (KeyMap.Resolve(key) is not { } gameKey)
+        {
+            return false;
+        }
+
+        game.Release(gameKey);
+        return true;
+    }
+
+    private bool Tick()
+    {
+        var elapsed = stopwatch.Elapsed.TotalSeconds;
+        stopwatch.Restart();
+        game.Paused = !SceneRenderer.Fits(Viewport.Width, Viewport.Height);
+        game.Advance(elapsed);
+        if (game.ExitRequested)
+        {
+            RequestStop();
+            return false;
+        }
+
+        SetNeedsDraw();
+        return true;
+    }
+
+    private void WriteRuns()
+    {
+        TuiAttribute? current = null;
+        foreach (var run in runs)
+        {
+            Move(run.Column, run.Row);
+            for (var x = run.Column; x < run.Column + run.Length; x++)
+            {
+                var cell = back[x, run.Row];
+                var attribute = TerminalColors.ToAttribute(cell);
+                if (current != attribute)
+                {
+                    SetAttribute(attribute);
+                    current = attribute;
+                }
+
+                AddRune(cell.Glyph);
+            }
+        }
+    }
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Tui/KeyMap.cs
+SIZE:     0.60 KB (612 bytes)
+LINES:    20
+SHA256:   938c2f86a992a571132431c1dc3115d366a6298684d7b3b2d40b62f7b9e1b8dd
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using Terminal.Gui.Drivers;
+using Terminal.Gui.Input;
+using TermRacer.Core;
+
+namespace TermRacer.Tui;
+
+internal static class KeyMap
+{
+    public static GameKey? Resolve(Key key) => key.NoShift.KeyCode switch
+    {
+        KeyCode.CursorUp or KeyCode.W => GameKey.Up,
+        KeyCode.CursorDown or KeyCode.S => GameKey.Down,
+        KeyCode.CursorLeft or KeyCode.A => GameKey.Left,
+        KeyCode.CursorRight or KeyCode.D => GameKey.Right,
+        KeyCode.Enter or KeyCode.Space => GameKey.Confirm,
+        KeyCode.Tab => GameKey.ToggleAutopilot,
+        KeyCode.Esc => GameKey.Exit,
+        _ => null,
+    };
+}
+
+
+================================================================================
+FILE:     src/TermRacer.Tui/Program.cs
+SIZE:     0.33 KB (343 bytes)
+LINES:    14
+SHA256:   a08b3bf78d7c001471247ea06c229c0399d78dacadc87a93eea3e5852d6c4cca
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using Terminal.Gui.App;
+using Terminal.Gui.Drivers;
+using TermRacer.Core;
+using TermRacer.Tui;
+
+Application.MaximumIterationsPerSecond = 60;
+using var app = Application.Create().Init(DriverRegistry.Names.ANSI);
+if (app.Driver is { } driver)
+{
+    driver.Force16Colors = false;
+}
+
+using var view = new GameView(app, new Game());
+app.Run(view);
+
+
+================================================================================
+FILE:     src/TermRacer.Tui/TermRacer.Tui.csproj
+SIZE:     0.46 KB (473 bytes)
+LINES:    14
+SHA256:   de8793698fc6cd43ac9ecb26f382ea235b2a61c09b0b38b692394ac85f2b36a3
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>termracer</AssemblyName>
+    <RootNamespace>TermRacer.Tui</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Terminal.Gui" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TermRacer.Core\TermRacer.Core.csproj" />
+    <ProjectReference Include="..\TermRacer.Rendering\TermRacer.Rendering.csproj" />
+  </ItemGroup>
+</Project>
+
+
+================================================================================
+FILE:     src/TermRacer.Tui/TerminalColors.cs
+SIZE:     0.38 KB (385 bytes)
+LINES:    12
+SHA256:   44a849c017a2436458544848fd582feba5b40a72c655b4e02f7dfe34f3f2dcee
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Rendering;
+using TuiAttribute = Terminal.Gui.Drawing.Attribute;
+using TuiColor = Terminal.Gui.Drawing.Color;
+
+namespace TermRacer.Tui;
+
+internal static class TerminalColors
+{
+    public static TuiAttribute ToAttribute(in Cell cell) => new(ToColor(cell.Foreground), ToColor(cell.Background));
+
+    private static TuiColor ToColor(Rgb rgb) => new(rgb.R, rgb.G, rgb.B);
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/AutopilotTests.cs
+SIZE:     1.66 KB (1701 bytes)
+LINES:    49
+SHA256:   fb33e85b1419647747bd67a823899f228f0f8906a2d57f6e7e46cd66de4788be
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class AutopilotTests
+{
+    [Fact]
+    public void AutopilotLapsCleanly()
+    {
+        var session = new RaceSession(Fixtures.Track, Fixtures.Line, CarSpec.Default, RaceMode.Zen, autopilotEngaged: true);
+        var offTrack = 0;
+        var steps = (int)(300 / RaceSession.Step);
+        for (var i = 0; i < steps && session.Laps.Laps.Count < 3; i++)
+        {
+            session.StepOnce();
+            offTrack += session.Surface == Surface.Grass ? 1 : 0;
+        }
+
+        Assert.Equal(3, session.Laps.Laps.Count);
+        Assert.Equal(0, session.WallHits);
+        Assert.Equal(0, offTrack);
+    }
+
+    [Fact]
+    public void SingleLapOnAutopilotFinishes()
+    {
+        var session = new RaceSession(Fixtures.Track, Fixtures.Line, CarSpec.Default, RaceMode.SingleLap, autopilotEngaged: true);
+        session.Advance((int)(180 / RaceSession.Step));
+        Assert.True(session.IsFinished);
+        Assert.InRange(Assert.Single(session.Laps.Laps), 35, 75);
+    }
+
+    [Fact]
+    public void AutopilotRecoversFacingBackwardsOnTheGrass()
+    {
+        var track = Fixtures.Track;
+        var index = track.Count / 2;
+        var session = new RaceSession(track, Fixtures.Line, CarSpec.Default, RaceMode.Zen, autopilotEngaged: true);
+        session.Place(new CarState(track.Point(index) + track.Normal(index) * (track.HalfWidth + 5), track.Tangent(index).Angle + Math.PI, Vec2.Zero));
+        var steps = (int)(240 / RaceSession.Step);
+        for (var i = 0; i < steps && session.Laps.Laps.Count == 0; i++)
+        {
+            session.StepOnce();
+        }
+
+        Assert.NotEmpty(session.Laps.Laps);
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/CarPhysicsTests.cs
+SIZE:     2.46 KB (2515 bytes)
+LINES:    73
+SHA256:   13706aed510cf05ed26fb9cd92896c98c71a48fbc833e3fe660ed3bbd7915ef2
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class CarPhysicsTests
+{
+    private static readonly CarSpec Spec = CarSpec.Default;
+
+    private static CarState Run(CarState state, ControlInput input, double seconds, Surface surface = Surface.Tarmac)
+    {
+        var steps = (int)Math.Round(seconds / RaceSession.Step);
+        for (var i = 0; i < steps; i++)
+        {
+            state = CarPhysics.Step(state, input, Spec, surface, RaceSession.Step);
+        }
+
+        return state;
+    }
+
+    private static CarState Rest => new(Vec2.Zero, 0, Vec2.Zero);
+
+    [Fact]
+    public void FullThrottleAcceleratesBriskly() => Assert.InRange(Run(Rest, new ControlInput(1, 0, 0), 2).Speed, 14, 19);
+
+    [Fact]
+    public void TopSpeedIsBounded() => Assert.InRange(Run(Rest, new ControlInput(1, 0, 0), 60).Speed, 40, 50);
+
+    [Fact]
+    public void GrassCostsTopSpeed() =>
+        Assert.True(Run(Rest, new ControlInput(1, 0, 0), 30, Surface.Grass).Speed < Run(Rest, new ControlInput(1, 0, 0), 30).Speed - 10);
+
+    [Fact]
+    public void BrakingStopsWithinExpectedDistance()
+    {
+        var state = new CarState(Vec2.Zero, 0, new Vec2(40, 0));
+        for (var i = 0; i < 2000 && state.ForwardSpeed > CarPhysics.ReverseThreshold; i++)
+        {
+            state = CarPhysics.Step(state, new ControlInput(0, 1, 0), Spec, Surface.Tarmac, RaceSession.Step);
+        }
+
+        Assert.InRange(state.Position.X, 40, 51);
+    }
+
+    [Fact]
+    public void CorneringStaysWithinGrip()
+    {
+        var state = new CarState(Vec2.Zero, 0, new Vec2(30, 0));
+        for (var i = 0; i < 240; i++)
+        {
+            state = CarPhysics.Step(state, new ControlInput(0.4, 0, 1), Spec, Surface.Tarmac, RaceSession.Step);
+            Assert.True(Math.Abs(state.YawRate * state.ForwardSpeed) <= Spec.TarmacGrip + 1e-9);
+        }
+
+        Assert.True(state.Heading > 0);
+    }
+
+    [Fact]
+    public void BrakeAtStandstillReverses() =>
+        Assert.InRange(Run(Rest, new ControlInput(0, 1, 0), 4).ForwardSpeed, -Spec.MaxReverseSpeed - 0.01, -1);
+
+    [Fact]
+    public void NoSteeringHoldsTheLine()
+    {
+        var state = Run(Rest, new ControlInput(1, 0, 0), 3);
+        Assert.Equal(0, state.Heading, 1e-12);
+        Assert.Equal(0, state.Position.Y, 1e-12);
+    }
+
+    [Fact]
+    public void SteeringRampsAtSteerRate() =>
+        Assert.Equal(Spec.SteerRate * RaceSession.Step, CarPhysics.Step(Rest, new ControlInput(0, 0, 1), Spec, Surface.Tarmac, RaceSession.Step).Steer, 1e-12);
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/DriverControlsTests.cs
+SIZE:     2.21 KB (2267 bytes)
+LINES:    69
+SHA256:   9797746a17aa68349d503a8da67b7cc5b6a321aadf25a8982ef7d3066206a789
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class DriverControlsTests
+{
+    [Fact]
+    public void LegacyThrottleLatchesUntilBrake()
+    {
+        var controls = new DriverControls();
+        controls.Press(DriveControl.Throttle, 0);
+        Assert.Equal(1, controls.Sample(30).Throttle);
+        controls.Press(DriveControl.Brake, 30);
+        Assert.Equal(new ControlInput(0, 1, 0), controls.Sample(30.1));
+    }
+
+    [Fact]
+    public void LegacySteeringExpiresWithoutRepeats()
+    {
+        var controls = new DriverControls(0.55, 0.16);
+        controls.Press(DriveControl.SteerLeft, 0);
+        Assert.Equal(-1, controls.Sample(0.5).Steer);
+        Assert.Equal(0, controls.Sample(0.6).Steer);
+    }
+
+    [Fact]
+    public void LegacyRepeatsShortenTheHold()
+    {
+        var controls = new DriverControls(0.55, 0.16);
+        controls.Press(DriveControl.SteerRight, 0);
+        controls.Press(DriveControl.SteerRight, 0.5);
+        Assert.True(controls.Active(DriveControl.SteerRight, 0.65));
+        Assert.False(controls.Active(DriveControl.SteerRight, 0.67));
+    }
+
+    [Fact]
+    public void OppositeSteeringCancels()
+    {
+        var controls = new DriverControls();
+        controls.Press(DriveControl.SteerLeft, 0);
+        controls.Press(DriveControl.SteerRight, 0.1);
+        Assert.Equal(1, controls.Sample(0.2).Steer);
+    }
+
+    [Fact]
+    public void ReleaseEventsSwitchToExactHolding()
+    {
+        var controls = new DriverControls();
+        controls.Press(DriveControl.Throttle, 0);
+        controls.Release(DriveControl.Throttle, 1);
+        Assert.True(controls.ReleaseAware);
+        Assert.Equal(0, controls.Sample(1).Throttle);
+        controls.Press(DriveControl.SteerRight, 2);
+        Assert.Equal(1, controls.Sample(100).Steer);
+        controls.Release(DriveControl.SteerRight, 101);
+        Assert.Equal(0, controls.Sample(101).Steer);
+    }
+
+    [Fact]
+    public void SwitchingModesKeepsHeldControls()
+    {
+        var controls = new DriverControls();
+        controls.Press(DriveControl.Throttle, 0);
+        controls.Press(DriveControl.SteerLeft, 0.1);
+        controls.Release(DriveControl.SteerLeft, 0.3);
+        Assert.Equal(new ControlInput(1, 0, 0), controls.Sample(5));
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/FixedStepClockTests.cs
+SIZE:     0.53 KB (540 bytes)
+LINES:    21
+SHA256:   ea6dbf8c58cfa5124868b19c2ddd7dde7a9641b66ff7b2d6a8e104b1a6758b0b
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class FixedStepClockTests
+{
+    [Fact]
+    public void CarriesPartialSteps()
+    {
+        var clock = new FixedStepClock(0.01);
+        Assert.Equal(2, clock.Advance(0.025));
+        Assert.Equal(1, clock.Advance(0.006));
+    }
+
+    [Fact]
+    public void LongStallsAreClamped() => Assert.Equal(25, new FixedStepClock(0.01, 0.25).Advance(10));
+
+    [Fact]
+    public void NegativeTimeIsIgnored() => Assert.Equal(0, new FixedStepClock(0.01).Advance(-1));
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/Fixtures.cs
+SIZE:     0.42 KB (428 bytes)
+LINES:    14
+SHA256:   af24644421caed37847578f023da14a81f72e42c2c5100a3ed9a91eaba5ba01a
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+
+namespace TermRacer.Core.Tests;
+
+internal static class Fixtures
+{
+    public static Track Track { get; } = Track.Build(Circuits.Gullwing);
+
+    public static RacingLine Line { get; } = RacingLine.Build(Track);
+
+    public static Game NewGame() => new(Track, Line, CarSpec.Default);
+
+    public static Vec2 PathPoint(int index) => (Track.Point(index) + Track.Point(index + 1)) / 2 + Track.Normal(index);
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/GameTests.cs
+SIZE:     2.52 KB (2583 bytes)
+LINES:    95
+SHA256:   fdd5c9eba6055a89cf61dc89fc3d1a6d0fea6850eac3cd252e453bed722197e5
+MODIFIED: 2026-09-27 16:48:10 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class GameTests
+{
+    [Fact]
+    public void StartsOnTheMenuWithSingleLapSelected()
+    {
+        var game = Fixtures.NewGame();
+        Assert.Equal(GameScreen.Menu, game.Screen);
+        Assert.Equal(RaceMode.SingleLap, game.SelectedMode);
+        Assert.Null(game.Race);
+    }
+
+    [Fact]
+    public void MenuSelectsModeAndStartsRace()
+    {
+        var game = Fixtures.NewGame();
+        game.Press(GameKey.Down);
+        Assert.Equal(RaceMode.Zen, game.SelectedMode);
+        game.Press(GameKey.Confirm);
+        Assert.Equal(GameScreen.Race, game.Screen);
+        Assert.Equal(RaceMode.Zen, game.Race!.Mode);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ExitIsImmediate(bool racing)
+    {
+        var game = Fixtures.NewGame();
+        if (racing)
+        {
+            game.Press(GameKey.Confirm);
+        }
+
+        game.Press(GameKey.Exit);
+        Assert.True(game.ExitRequested);
+    }
+
+    [Fact]
+    public void ToggleSwitchesAutopilotAndIgnoresBounce()
+    {
+        var game = Fixtures.NewGame();
+        game.Press(GameKey.Confirm);
+        game.Press(GameKey.ToggleAutopilot);
+        game.Press(GameKey.ToggleAutopilot);
+        Assert.True(game.Race!.AutopilotEngaged);
+        game.Advance(Game.KeyGuard + 0.05);
+        game.Press(GameKey.ToggleAutopilot);
+        Assert.False(game.Race.AutopilotEngaged);
+    }
+
+    [Fact]
+    public void DrivingKeysReachTheCar()
+    {
+        var game = Fixtures.NewGame();
+        game.Press(GameKey.Confirm);
+        game.Press(GameKey.Up);
+        game.Advance(0.1);
+        Assert.Equal(1, game.Race!.Input.Throttle);
+        Assert.True(game.Race.Car.Speed > 0);
+    }
+
+    [Fact]
+    public void SingleLapEndsOnResultsAndReturnsToMenu()
+    {
+        var game = Fixtures.NewGame();
+        game.Press(GameKey.Confirm);
+        game.Press(GameKey.ToggleAutopilot);
+        for (var i = 0; i < 2000 && game.Screen != GameScreen.Results; i++)
+        {
+            game.Advance(0.1);
+        }
+
+        Assert.Equal(GameScreen.Results, game.Screen);
+        Assert.Single(game.Race!.Laps.Laps);
+        game.Advance(Game.KeyGuard + 0.05);
+        game.Press(GameKey.Confirm);
+        Assert.Equal(GameScreen.Menu, game.Screen);
+        Assert.Null(game.Race);
+    }
+
+    [Fact]
+    public void PausedGameHoldsTime()
+    {
+        var game = Fixtures.NewGame();
+        game.Press(GameKey.Confirm);
+        game.Paused = true;
+        game.Advance(1);
+        Assert.Equal(0, game.Race!.Time);
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/GeometryTests.cs
+SIZE:     1.43 KB (1467 bytes)
+LINES:    40
+SHA256:   e089aefd8706427dc373f7d728a45b34a473351702f31dd263dbb482ed6bcb07
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class GeometryTests
+{
+    [Fact]
+    public void CrossingSegmentsReportPathParameter()
+    {
+        Assert.True(Geometry.TryIntersect(new Vec2(0, 0), new Vec2(4, 0), new Vec2(1, -1), new Vec2(1, 1), out var t));
+        Assert.Equal(0.25, t, 1e-12);
+    }
+
+    [Fact]
+    public void ParallelSegmentsDoNotIntersect() =>
+        Assert.False(Geometry.TryIntersect(new Vec2(0, 0), new Vec2(1, 0), new Vec2(0, 1), new Vec2(1, 1), out _));
+
+    [Fact]
+    public void TouchingAtAStepBoundaryCountsOnce()
+    {
+        var first = Geometry.TryIntersect(new Vec2(0, 0), new Vec2(1, 0), new Vec2(1, -1), new Vec2(1, 1), out _);
+        var second = Geometry.TryIntersect(new Vec2(1, 0), new Vec2(2, 0), new Vec2(1, -1), new Vec2(1, 1), out _);
+        Assert.NotEqual(first, second);
+    }
+
+    [Theory]
+    [InlineData(1.0, 1.0)]
+    [InlineData(7.0, 7.0 - 2 * Math.PI)]
+    [InlineData(-4.0, -4.0 + 2 * Math.PI)]
+    public void NormalizeAngleWrapsIntoHalfTurn(double input, double expected) =>
+        Assert.Equal(expected, Geometry.NormalizeAngle(input), 1e-12);
+
+    [Theory]
+    [InlineData(0.0, 1.0, 0.25, 0.25)]
+    [InlineData(0.9, 1.0, 0.25, 1.0)]
+    [InlineData(1.0, -1.0, 0.5, 0.5)]
+    public void MoveTowardsNeverOvershoots(double current, double target, double step, double expected) =>
+        Assert.Equal(expected, Geometry.MoveTowards(current, target, step), 1e-12);
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/LapTrackerTests.cs
+SIZE:     2.88 KB (2951 bytes)
+LINES:    93
+SHA256:   403516f52daadf116570886f538578cc7cea60f6cc0e39f7f61c075232f01709
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class LapTrackerTests
+{
+    private static Track Track => Fixtures.Track;
+
+    [Fact]
+    public void CrossingTheLineStartsTheClockAtTheInterpolatedTime()
+    {
+        var laps = new LapTracker(Track, RaceMode.SingleLap);
+        var gate = Track.Gates[0];
+        Assert.Equal(LapEvent.Started, laps.Update(gate.Center - gate.Direction * 1.5, gate.Center + gate.Direction * 0.5, 10, 11));
+        Assert.Equal(RacePhase.Running, laps.Phase);
+        Assert.Equal(10.75, laps.LapStart, 1e-9);
+    }
+
+    [Fact]
+    public void CrossingTheLineBackwardsIsIgnored()
+    {
+        var laps = new LapTracker(Track, RaceMode.SingleLap);
+        var gate = Track.Gates[0];
+        Assert.Equal(LapEvent.None, laps.Update(gate.Center + gate.Direction, gate.Center - gate.Direction, 0, 1));
+        Assert.Equal(RacePhase.Waiting, laps.Phase);
+    }
+
+    [Fact]
+    public void OneFullLoopFinishesASingleLap()
+    {
+        var laps = Drive(new LapTracker(Track, RaceMode.SingleLap), 1);
+        Assert.Equal(RacePhase.Finished, laps.Phase);
+        Assert.Equal(Track.Count * 0.1, Assert.Single(laps.Laps), 0.05);
+        Assert.Equal(1, laps.CurrentLap);
+    }
+
+    [Fact]
+    public void ZenModeKeepsCounting()
+    {
+        var laps = Drive(new LapTracker(Track, RaceMode.Zen), 3);
+        Assert.Equal(RacePhase.Running, laps.Phase);
+        Assert.Equal(3, laps.Laps.Count);
+        Assert.Equal(4, laps.CurrentLap);
+        Assert.Equal(Track.Count * 0.1, laps.BestLap!.Value, 0.05);
+    }
+
+    [Fact]
+    public void SkippingACheckpointVoidsTheLap()
+    {
+        var laps = new LapTracker(Track, RaceMode.Zen);
+        var checkpoint = (int)Math.Round((double)Track.Count / Track.Gates.Count);
+        var time = 0.0;
+        var previous = Fixtures.PathPoint(-3);
+        void Move(Vec2 next)
+        {
+            laps.Update(previous, next, time, time + 0.1);
+            previous = next;
+            time += 0.1;
+        }
+
+        for (var k = -2; k < checkpoint - 3; k++)
+        {
+            Move(Fixtures.PathPoint(k));
+        }
+
+        Move(Track.Point(checkpoint - 3) + Track.Normal(checkpoint - 3) * 40);
+        Move(Track.Point(checkpoint + 3) + Track.Normal(checkpoint + 3) * 40);
+        for (var k = checkpoint + 3; k <= Track.Count + 5; k++)
+        {
+            Move(Fixtures.PathPoint(k));
+        }
+
+        Assert.Equal(RacePhase.Running, laps.Phase);
+        Assert.Empty(laps.Laps);
+        Assert.Equal(1, laps.NextGate);
+    }
+
+    private static LapTracker Drive(LapTracker laps, int loops)
+    {
+        var time = 0.0;
+        var previous = Fixtures.PathPoint(-5);
+        for (var k = -4; k <= Track.Count * loops + 5; k++)
+        {
+            var next = Fixtures.PathPoint(k);
+            laps.Update(previous, next, time, time + 0.1);
+            previous = next;
+            time += 0.1;
+        }
+
+        return laps;
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/RacingLineTests.cs
+SIZE:     1.20 KB (1233 bytes)
+LINES:    38
+SHA256:   88f28824370c23949b86f9540c42b529a2a427e3188af7fbf2303cc9ac5471d6
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class RacingLineTests
+{
+    private static RacingLine Line => Fixtures.Line;
+
+    [Fact]
+    public void LineStaysInsideTheTrack()
+    {
+        for (var i = 0; i < Line.Count; i++)
+        {
+            Assert.InRange(Line.Offset(i), -Fixtures.Track.HalfWidth + 1.7 - 1e-9, Fixtures.Track.HalfWidth - 1.7 + 1e-9);
+        }
+    }
+
+    [Fact]
+    public void LineIsSmootherThanTheCenterline()
+    {
+        var line = Enumerable.Range(0, Line.Count).Sum(i => Line.Curvature(i) * Line.Curvature(i));
+        var center = Enumerable.Range(0, Fixtures.Track.Count).Sum(i => Fixtures.Track.Curvature(i) * Fixtures.Track.Curvature(i));
+        Assert.True(line < center * 0.8, $"line {line:0.0000} centre {center:0.0000}");
+    }
+
+    [Fact]
+    public void SpeedProfileIsReachableUnderBraking()
+    {
+        var profile = new SpeedProfile(Line, CarSpec.Default);
+        for (var i = 0; i < profile.Count; i++)
+        {
+            var next = profile[i + 1];
+            Assert.True(profile[i] * profile[i] <= next * next + 2 * profile.BrakeDeceleration * Line.SegmentLength(i) + 1e-6);
+            Assert.InRange(profile[i], 5, 44);
+        }
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/TermRacer.Core.Tests.csproj
+SIZE:     0.40 KB (414 bytes)
+LINES:    13
+SHA256:   18aa91be47088c07e4b1f4aff7cf9ffcd215987912e8900f5badda43d070bdbd
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TermRacer.Core\TermRacer.Core.csproj" />
+  </ItemGroup>
+</Project>
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/TrackTests.cs
+SIZE:     2.78 KB (2843 bytes)
+LINES:    84
+SHA256:   7d4355109e5ebaa01cee01b0f65ccdb840cf9c2de5ef1397fa689f2a1bb38e3d
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class TrackTests
+{
+    private static Track Track => Fixtures.Track;
+
+    [Fact]
+    public void SamplesAreEvenlySpacedAroundTheLoop()
+    {
+        for (var i = 0; i < Track.Count; i++)
+        {
+            Assert.InRange(Track.Point(i).DistanceTo(Track.Point(i + 1)), Track.Spacing * 0.9, Track.Spacing * 1.1);
+        }
+    }
+
+    [Fact]
+    public void LapLengthIsRaceable() => Assert.InRange(Track.Length, 1500, 2000);
+
+    [Fact]
+    public void CornersAreWiderThanTheRunoff()
+    {
+        var tightest = Enumerable.Range(0, Track.Count).Max(i => Math.Abs(Track.Curvature(i)));
+        Assert.True(tightest < 1 / (Track.WallOffset + 6), $"Tightest radius {1 / tightest:0.0} m");
+    }
+
+    [Fact]
+    public void SeparateSectionsNeverShareRunoff()
+    {
+        var closest = double.MaxValue;
+        for (var i = 0; i < Track.Count; i++)
+        {
+            for (var j = i + 1; j < Track.Count; j++)
+            {
+                var along = Math.Min(j - i, Track.Count - (j - i)) * Track.Spacing;
+                if (along > 3.5 * Track.WallOffset)
+                {
+                    closest = Math.Min(closest, Track.Point(i).DistanceTo(Track.Point(j)));
+                }
+            }
+        }
+
+        Assert.True(closest > 2 * Track.WallOffset + 2, $"Closest approach {closest:0.0} m");
+    }
+
+    [Fact]
+    public void ProjectionRecoversLateralOffset()
+    {
+        var index = Track.Count / 3;
+        var projection = Track.Project(Track.Point(index) + Track.Normal(index) * 3);
+        Assert.Equal(3, projection.Lateral, 0.05);
+        Assert.Equal(index * Track.Spacing, projection.S, Track.Spacing);
+    }
+
+    [Fact]
+    public void SurfaceChangesPastTheTrackEdge()
+    {
+        const int index = 40;
+        Assert.Equal(Surface.Tarmac, Track.SurfaceAt(Track.Point(index)));
+        Assert.Equal(Surface.Grass, Track.SurfaceAt(Track.Point(index) + Track.Normal(index) * (Track.HalfWidth + 3)));
+    }
+
+    [Fact]
+    public void StartPoseSitsBehindTheLineFacingIt()
+    {
+        var start = Track.StartPose;
+        var ahead = (Track.Gates[0].Center - start.Position).Dot(Vec2.FromAngle(start.Heading));
+        Assert.InRange(ahead, Circuits.Gullwing.StartOffset - 1, Circuits.Gullwing.StartOffset + 1);
+    }
+
+    [Fact]
+    public void GatesStartAtTheFinishLine()
+    {
+        Assert.Equal(Circuits.Gullwing.Checkpoints, Track.Gates.Count);
+        Assert.Equal(0, Track.Gates[0].Center.DistanceTo(Track.Point(0)), 1e-9);
+        Assert.True(Track.Gates[0].Direction.Dot(Track.Tangent(0)) > 0.999);
+    }
+
+    [Fact]
+    public void OpenLayoutIsRejected() =>
+        Assert.Throws<ArgumentException>(() => Track.Build(new TrackDefinition("Open", Vec2.Zero, 0, [TrackSection.Straight(100), TrackSection.Arc(30, 90)])));
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/Vec2Tests.cs
+SIZE:     0.99 KB (1009 bytes)
+LINES:    35
+SHA256:   62eef531ab0042714e00a90548445e76b76149f26b3d5b2922c3483be77ed58c
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class Vec2Tests
+{
+    [Fact]
+    public void PerpendicularPointsToTheRightOfTravel()
+    {
+        var right = Vec2.FromAngle(0).Perpendicular;
+        Assert.Equal(0, right.X, 1e-12);
+        Assert.Equal(1, right.Y, 1e-12);
+    }
+
+    [Fact]
+    public void RotateMatchesFromAngle()
+    {
+        var rotated = new Vec2(1, 0).Rotate(Math.PI / 3);
+        var expected = Vec2.FromAngle(Math.PI / 3);
+        Assert.Equal(expected.X, rotated.X, 1e-12);
+        Assert.Equal(expected.Y, rotated.Y, 1e-12);
+    }
+
+    [Fact]
+    public void NormalizingZeroIsSafe() => Assert.Equal(Vec2.Zero, Vec2.Zero.Normalized());
+
+    [Theory]
+    [InlineData(3, 4, 5)]
+    [InlineData(-6, 8, 10)]
+    public void LengthIsEuclidean(double x, double y, double length) => Assert.Equal(length, new Vec2(x, y).Length, 1e-12);
+
+    [Fact]
+    public void CrossIsPositiveForRightTurns() => Assert.True(new Vec2(1, 0).Cross(new Vec2(0, 1)) > 0);
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Core.Tests/WallsTests.cs
+SIZE:     1.03 KB (1052 bytes)
+LINES:    30
+SHA256:   34e374c471169f6c8102ea77765d2f38c46907ce7944c95bede63b083603f8b4
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Core.Tests;
+
+public sealed class WallsTests
+{
+    [Fact]
+    public void CarPastTheWallIsPushedBackAndBounces()
+    {
+        var track = Fixtures.Track;
+        const int index = 100;
+        var normal = track.Normal(index);
+        var state = new CarState(track.Point(index) + normal * (track.WallOffset + 2), track.Tangent(index).Angle, normal * 10);
+        var impact = Walls.Resolve(ref state, track, CarSpec.Default, track.Project(state.Position));
+        Assert.NotNull(impact);
+        Assert.InRange(track.Project(state.Position).Distance, 0, track.WallOffset);
+        Assert.True(state.Velocity.Dot(normal) <= 0);
+    }
+
+    [Fact]
+    public void CarInsideTheWallsIsUntouched()
+    {
+        var track = Fixtures.Track;
+        var state = CarState.At(track.StartPose) with { Velocity = new Vec2(5, 1) };
+        var before = state;
+        Assert.Null(Walls.Resolve(ref state, track, CarSpec.Default, track.Project(state.Position)));
+        Assert.Equal(before, state);
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Rendering.Tests/CameraTests.cs
+SIZE:     1.00 KB (1019 bytes)
+LINES:    35
+SHA256:   f44fa157be2f94f34f4d98aac7481b4a1e0d5d111f0418b6c4415f295d8ccf56
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Rendering.Tests;
+
+public sealed class CameraTests
+{
+    [Fact]
+    public void CenterMapsToTheMiddle()
+    {
+        var camera = new Camera(new Vec2(50, -20), 0.5, 120, 80);
+        Assert.Equal(new Vec2(60, 40), camera.ToPixel(new Vec2(50, -20)));
+    }
+
+    [Fact]
+    public void PixelAndWorldRoundTrip()
+    {
+        var camera = new Camera(new Vec2(3, 4), 0.72, 100, 60);
+        var world = camera.ToWorld(camera.ToPixel(new Vec2(-12.5, 33.25)));
+        Assert.Equal(-12.5, world.X, 1e-9);
+        Assert.Equal(33.25, world.Y, 1e-9);
+    }
+
+    [Fact]
+    public void FitKeepsBoundsInView()
+    {
+        var camera = Camera.Fit(new Vec2(-100, -50), new Vec2(300, 150), 90, 40, 2);
+        var low = camera.ToPixel(new Vec2(-100, -50));
+        var high = camera.ToPixel(new Vec2(300, 150));
+        Assert.InRange(low.X, 0, 90);
+        Assert.InRange(high.X, 0, 90);
+        Assert.InRange(low.Y, 0, 40);
+        Assert.InRange(high.Y, 0, 40);
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Rendering.Tests/CellBufferTests.cs
+SIZE:     0.90 KB (924 bytes)
+LINES:    36
+SHA256:   5d52ba969276f8c694c8bcfab3973d45c4b8b2b03330639caeca738ddcd4a5ae
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using Xunit;
+
+namespace TermRacer.Rendering.Tests;
+
+public sealed class CellBufferTests
+{
+    private static readonly Rgb Ink = new(1, 2, 3);
+
+    [Fact]
+    public void WriteClipsAtTheEdge()
+    {
+        var buffer = new CellBuffer(5, 1);
+        buffer.Fill(new Cell('.', Ink, Ink));
+        Assert.Equal(7, buffer.Write(3, 0, "abcd", Ink, Ink));
+        Assert.Equal("...ab", buffer.RowText(0));
+    }
+
+    [Fact]
+    public void WriteCenteredCenters()
+    {
+        var buffer = new CellBuffer(7, 1);
+        buffer.Fill(new Cell('.', Ink, Ink));
+        buffer.WriteCentered(0, "abc", Ink, Ink);
+        Assert.Equal("..abc..", buffer.RowText(0));
+    }
+
+    [Fact]
+    public void ResizeReallocates()
+    {
+        var buffer = new CellBuffer(2, 2);
+        buffer.Fill(new Cell('x', Ink, Ink));
+        buffer.Resize(3, 1);
+        Assert.Equal(3, buffer.Width);
+        Assert.Equal(default, buffer[2, 0]);
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Rendering.Tests/Fixtures.cs
+SIZE:     0.74 KB (755 bytes)
+LINES:    27
+SHA256:   dc92eec3317d649330f3b47f7333a290c1bc790854943d1c74fc3f684334766d
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+
+namespace TermRacer.Rendering.Tests;
+
+internal static class Fixtures
+{
+    public static Track Track { get; } = Track.Build(Circuits.Gullwing);
+
+    public static RacingLine Line { get; } = RacingLine.Build(Track);
+
+    public static Game NewGame() => new(Track, Line, CarSpec.Default);
+
+    public static Game FinishedGame()
+    {
+        var game = NewGame();
+        game.Press(GameKey.Confirm);
+        game.Press(GameKey.ToggleAutopilot);
+        for (var i = 0; i < 2000 && game.Screen != GameScreen.Results; i++)
+        {
+            game.Advance(0.1);
+        }
+
+        return game;
+    }
+
+    public static string Text(CellBuffer buffer) => string.Join('\n', Enumerable.Range(0, buffer.Height).Select(buffer.RowText));
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Rendering.Tests/FrameDiffTests.cs
+SIZE:     1.70 KB (1743 bytes)
+LINES:    64
+SHA256:   16e18dde5eb802c52faac7a72ffbb75e7bf149cb89d14eefc335f6d77ddc610d
+MODIFIED: 2026-09-27 16:48:10 (UTC)
+================================================================================
+
+using Xunit;
+
+namespace TermRacer.Rendering.Tests;
+
+public sealed class FrameDiffTests
+{
+    private static readonly Rgb Ink = new(9, 9, 9);
+
+    private static CellBuffer Blank()
+    {
+        var buffer = new CellBuffer(10, 3);
+        buffer.Fill(new Cell(' ', Ink, Ink));
+        return buffer;
+    }
+
+    [Fact]
+    public void IdenticalFramesWriteNothing()
+    {
+        var runs = new List<CellRun>();
+        FrameDiff.Compute(Blank(), Blank(), runs);
+        Assert.Empty(runs);
+    }
+
+    [Fact]
+    public void ChangedCellsFormRuns()
+    {
+        var current = Blank();
+        current[2, 1] = new Cell('a', Ink, Ink);
+        current[3, 1] = new Cell('b', Ink, Ink);
+        current[7, 1] = new Cell('c', Ink, Ink);
+        var runs = new List<CellRun>();
+        FrameDiff.Compute(Blank(), current, runs);
+        Assert.Equal(2, runs.Count);
+        Assert.Equal(new CellRun(1, 2, 2), runs[0]);
+        Assert.Equal(new CellRun(1, 7, 1), runs[1]);
+    }
+
+    [Fact]
+    public void ColourOnlyChangesCount()
+    {
+        var current = Blank();
+        current[0, 0] = new Cell(' ', Ink, new Rgb(1, 1, 1));
+        var runs = new List<CellRun>();
+        FrameDiff.Compute(Blank(), current, runs);
+        Assert.Equal(new CellRun(0, 0, 1), Assert.Single(runs));
+    }
+
+    [Fact]
+    public void SizeChangeRedrawsEverything()
+    {
+        var runs = new List<CellRun>();
+        FrameDiff.Compute(new CellBuffer(4, 4), Blank(), runs);
+        Assert.Equal(30, FrameDiff.CellCount(runs));
+    }
+
+    [Fact]
+    public void FullCoversEveryCell()
+    {
+        var runs = new List<CellRun>();
+        FrameDiff.Full(Blank(), runs);
+        Assert.Equal(3, runs.Count);
+        Assert.Equal(30, FrameDiff.CellCount(runs));
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Rendering.Tests/PixelCanvasTests.cs
+SIZE:     3.18 KB (3253 bytes)
+LINES:    104
+SHA256:   bec7a514b61b671a1134ae9ac203faf94265280bccc402dc91a4507d5ddc184b
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Rendering.Tests;
+
+public sealed class PixelCanvasTests
+{
+    private static readonly Rgb Black = new(0, 0, 0);
+    private static readonly Rgb White = new(255, 255, 255);
+
+    [Fact]
+    public void FillsExactlyThePixelCentersInside()
+    {
+        var canvas = new PixelCanvas(6, 6);
+        canvas.Clear(Black);
+        canvas.FillPolygon([new Vec2(1, 1), new Vec2(4, 1), new Vec2(4, 4), new Vec2(1, 4)], White);
+        for (var y = 0; y < 6; y++)
+        {
+            for (var x = 0; x < 6; x++)
+            {
+                Assert.Equal(x is >= 1 and < 4 && y is >= 1 and < 4 ? White : Black, canvas[x, y]);
+            }
+        }
+    }
+
+    [Fact]
+    public void TrianglesSharingAnEdgeLeaveNoGaps()
+    {
+        Vec2[] quad = [new(0.3, 0.2), new(5.7, 0.9), new(5.2, 5.6), new(0.6, 5.1)];
+        var canvas = new PixelCanvas(6, 6);
+        canvas.Clear(Black);
+        canvas.FillPolygon([quad[0], quad[1], quad[2]], White);
+        canvas.FillPolygon([quad[0], quad[2], quad[3]], White);
+        for (var y = 0; y < 6; y++)
+        {
+            for (var x = 0; x < 6; x++)
+            {
+                Assert.Equal(Inside(quad, new Vec2(x + 0.5, y + 0.5)) ? White : Black, canvas[x, y]);
+            }
+        }
+    }
+
+    [Fact]
+    public void PolygonsOffCanvasAreIgnored()
+    {
+        var canvas = new PixelCanvas(4, 4);
+        canvas.Clear(Black);
+        canvas.FillPolygon([new Vec2(-10, -10), new Vec2(-5, -10), new Vec2(-5, -5)], White);
+        canvas.FillPolygon([new Vec2(10, 10), new Vec2(20, 10), new Vec2(20, 20)], White);
+        Assert.Equal(Black, canvas[0, 0]);
+        Assert.Equal(Black, canvas[3, 3]);
+    }
+
+    [Fact]
+    public void ShadeDarkensOnlyInside()
+    {
+        var canvas = new PixelCanvas(4, 1);
+        canvas.Clear(White);
+        canvas.ShadePolygon([new Vec2(0, 0), new Vec2(2, 0), new Vec2(2, 1), new Vec2(0, 1)], 0.5);
+        Assert.Equal(new Rgb(128, 128, 128), canvas[0, 0]);
+        Assert.Equal(White, canvas[3, 0]);
+    }
+
+    [Fact]
+    public void LinesReachBothEnds()
+    {
+        var canvas = new PixelCanvas(8, 8);
+        canvas.Clear(Black);
+        canvas.DrawLine(new Vec2(0.5, 0.5), new Vec2(7.5, 3.5), White);
+        Assert.Equal(White, canvas[0, 0]);
+        Assert.Equal(White, canvas[7, 3]);
+    }
+
+    [Fact]
+    public void ComposesPixelPairsIntoHalfBlocks()
+    {
+        var canvas = new PixelCanvas(2, 2);
+        var red = new Rgb(255, 0, 0);
+        var blue = new Rgb(0, 0, 255);
+        var green = new Rgb(0, 255, 0);
+        canvas[0, 0] = red;
+        canvas[0, 1] = blue;
+        canvas[1, 0] = green;
+        canvas[1, 1] = green;
+        var cells = new CellBuffer(2, 1);
+        canvas.ComposeInto(cells, 0, 0);
+        Assert.Equal(new Cell(Cell.UpperHalf, red, blue), cells[0, 0]);
+        Assert.Equal(new Cell(' ', green, green), cells[1, 0]);
+    }
+
+    private static bool Inside(Vec2[] polygon, Vec2 point)
+    {
+        for (var i = 0; i < polygon.Length; i++)
+        {
+            var edge = polygon[(i + 1) % polygon.Length] - polygon[i];
+            if (edge.Cross(point - polygon[i]) < 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Rendering.Tests/SceneRendererTests.cs
+SIZE:     3.32 KB (3395 bytes)
+LINES:    106
+SHA256:   6258f5203e62a29af8b1bd8fc9ca3f72ce15d4d17f6bdc93bb9587faaab8a2cb
+MODIFIED: 2026-09-27 16:48:10 (UTC)
+================================================================================
+
+using TermRacer.Core;
+using Xunit;
+
+namespace TermRacer.Rendering.Tests;
+
+public sealed class SceneRendererTests
+{
+    [Fact]
+    public void SmallTerminalGetsResizePrompt()
+    {
+        var buffer = new CellBuffer(100, 30);
+        new SceneRenderer(Fixtures.Track).Render(Fixtures.NewGame(), buffer);
+        var text = Fixtures.Text(buffer);
+        Assert.Contains("Terminal too small", text);
+        Assert.Contains("120 × 40 needed", text);
+    }
+
+    [Fact]
+    public void EveryScreenPaintsEveryCell()
+    {
+        var game = Fixtures.FinishedGame();
+        var renderer = new SceneRenderer(Fixtures.Track);
+        foreach (var candidate in new[] { Fixtures.NewGame(), RacingGame(), game })
+        {
+            var buffer = new CellBuffer(SceneRenderer.MinColumns, SceneRenderer.MinRows);
+            renderer.Render(candidate, buffer);
+            for (var y = 0; y < buffer.Height; y++)
+            {
+                Assert.DoesNotContain("\0", buffer.RowText(y));
+            }
+        }
+    }
+
+    [Fact]
+    public void UnchangedStateRendersIdenticalFrames()
+    {
+        var game = RacingGame();
+        var renderer = new SceneRenderer(Fixtures.Track);
+        var first = new CellBuffer(130, 42);
+        var second = new CellBuffer(130, 42);
+        renderer.Render(game, first);
+        renderer.Render(game, second);
+        var runs = new List<CellRun>();
+        FrameDiff.Compute(first, second, runs);
+        Assert.Empty(runs);
+    }
+
+    [Fact]
+    public void DrivingRedrawsOnlyPartOfTheScreen()
+    {
+        var game = RacingGame();
+        var renderer = new SceneRenderer(Fixtures.Track);
+        var first = new CellBuffer(120, 40);
+        var second = new CellBuffer(120, 40);
+        renderer.Render(game, first);
+        game.Advance(0.25);
+        renderer.Render(game, second);
+        var runs = new List<CellRun>();
+        FrameDiff.Compute(first, second, runs);
+        Assert.NotEmpty(runs);
+        Assert.True(FrameDiff.CellCount(runs) < 120 * 40 / 2);
+    }
+
+    [Fact]
+    public void MenuShowsTitleAndModes()
+    {
+        var buffer = new CellBuffer(120, 40);
+        new SceneRenderer(Fixtures.Track).Render(Fixtures.NewGame(), buffer);
+        var text = Fixtures.Text(buffer);
+        Assert.Contains("Single lap", text);
+        Assert.Contains("Zen mode", text);
+        Assert.Contains(Fixtures.Track.Name, text);
+    }
+
+    [Fact]
+    public void HudShowsModeAndAutopilotBadge()
+    {
+        var game = RacingGame();
+        game.Press(GameKey.ToggleAutopilot);
+        var buffer = new CellBuffer(120, 40);
+        new SceneRenderer(Fixtures.Track).Render(game, buffer);
+        Assert.Contains("Single lap", buffer.RowText(0));
+        Assert.Contains("Autopilot", buffer.RowText(0));
+        Assert.Contains("Esc", buffer.RowText(39));
+    }
+
+    [Fact]
+    public void ResultsShowTheLapTime()
+    {
+        var game = Fixtures.FinishedGame();
+        var buffer = new CellBuffer(120, 40);
+        new SceneRenderer(Fixtures.Track).Render(game, buffer);
+        var text = Fixtures.Text(buffer);
+        Assert.Contains("Lap complete", text);
+        Assert.Contains(TimeFormat.Lap(game.Race!.Laps.LastLap), text);
+    }
+
+    private static Game RacingGame()
+    {
+        var game = Fixtures.NewGame();
+        game.Press(GameKey.Confirm);
+        game.Press(GameKey.Up);
+        game.Advance(2);
+        return game;
+    }
+}
+
+
+================================================================================
+FILE:     tests/TermRacer.Rendering.Tests/TermRacer.Rendering.Tests.csproj
+SIZE:     0.41 KB (424 bytes)
+LINES:    13
+SHA256:   d26c1c8ba0b2bb632c2c274f1c970b9499d0e533eefd88eb7b12395a9ae5f5be
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TermRacer.Rendering\TermRacer.Rendering.csproj" />
+  </ItemGroup>
+</Project>
+
+
+================================================================================
+FILE:     tests/TermRacer.Rendering.Tests/TimeFormatTests.cs
+SIZE:     0.58 KB (596 bytes)
+LINES:    19
+SHA256:   b74246c53b4e875e7bda74c56113c9e99c3a0a34613e68d32fa9f89a3622416a
+MODIFIED: 2026-09-27 16:46:44 (UTC)
+================================================================================
+
+using Xunit;
+
+namespace TermRacer.Rendering.Tests;
+
+public sealed class TimeFormatTests
+{
+    [Theory]
+    [InlineData(52.3184, "0:52.318")]
+    [InlineData(605.0, "10:05.000")]
+    [InlineData(59.9996, "1:00.000")]
+    [InlineData(0.0, "0:00.000")]
+    public void FormatsLapTimes(double seconds, string expected) => Assert.Equal(expected, TimeFormat.Lap(seconds));
+
+    [Fact]
+    public void MissingTimeUsesPlaceholder() => Assert.Equal(TimeFormat.Empty, TimeFormat.Lap(null));
+
+    [Fact]
+    public void SpeedIsShownInKilometresPerHour() => Assert.Equal("144 km/h", TimeFormat.Speed(40));
+}
+
+
+===============================================================================
+EXPORT COMPLETED (UTC): 2026-09-27 20:47:36
+Total Files Exported:   81
+Total Source Size:      0.13 MB (131073 bytes)
+Output File:            /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
+===============================================================================
+DUMP SHA256 (of all lines above this one): a728397892a306e66aa36b5e344d505b76036c7ab2ac2ddfc6ad56a93103f737
