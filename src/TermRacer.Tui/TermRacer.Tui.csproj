@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>termracer</AssemblyName>
+    <RootNamespace>TermRacer.Tui</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Terminal.Gui" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TermRacer.Core\TermRacer.Core.csproj" />
+    <ProjectReference Include="..\TermRacer.Rendering\TermRacer.Rendering.csproj" />
+  </ItemGroup>
+</Project>
