@@ -1,144 +1,29 @@
-kushal@fedora:~/src/dotnet/TermRacer$ git status
-fatal: not a git repository (or any parent up to mount point /)
-Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
-kushal@fedora:~/src/dotnet/TermRacer$ git init
-hint: Using 'master' as the name for the initial branch. This default branch name
-hint: will change to "main" in Git 3.0. To configure the initial branch name
-hint: to use in all of your new repositories, which will suppress this warning,
-hint: call:
-hint:
-hint: 	git config --global init.defaultBranch <name>
-hint:
-hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
-hint: 'development'. The just-created branch can be renamed via this command:
-hint:
-hint: 	git branch -m <name>
-hint:
-hint: Disable this message with "git config set advice.defaultBranchName false"
-Initialized empty Git repository in /home/kushal/src/dotnet/TermRacer/.git/
-kushal@fedora:~/src/dotnet/TermRacer$ git branch -m main
-kushal@fedora:~/src/dotnet/TermRacer$ git status
-On branch main
+kushal@fedora:~/src/dotnet/TermRacer$ cd /home/kushal/src/dotnet/TermRacer; time dotnet format; time dotnet clean; time dotnet build; time dotnet test; git status; time bash export.sh; time dotnet list package; time dotnet list package --outdated; time dotnet run --project TermRacer.Tui
 
-No commits yet
+real	0m5.768s
+user	0m9.171s
+sys	0m0.806s
 
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	.gitignore
-	Directory.Build.props
-	Directory.Packages.props
-	README.md
-	TermRacer.slnx
-	docs/
-	global.json
-	src/
-	tests/
+Build succeeded in 0.4s
 
-nothing added to commit but untracked files present (use "git add" to track)
-kushal@fedora:~/src/dotnet/TermRacer$ git add .
-kushal@fedora:~/src/dotnet/TermRacer$ git commit
-[main (root-commit) 7ca74dc] add claude response
- 80 files changed, 3699 insertions(+)
- create mode 100644 .gitignore
- create mode 100644 Directory.Build.props
- create mode 100644 Directory.Packages.props
- create mode 100644 README.md
- create mode 100644 TermRacer.slnx
- create mode 100644 docs/architecture.md
- create mode 100644 global.json
- create mode 100644 src/TermRacer.Core/Autopilot.cs
- create mode 100644 src/TermRacer.Core/CarPhysics.cs
- create mode 100644 src/TermRacer.Core/CarSpec.cs
- create mode 100644 src/TermRacer.Core/CarState.cs
- create mode 100644 src/TermRacer.Core/Circuits.cs
- create mode 100644 src/TermRacer.Core/ControlInput.cs
- create mode 100644 src/TermRacer.Core/DriveControl.cs
- create mode 100644 src/TermRacer.Core/DriverControls.cs
- create mode 100644 src/TermRacer.Core/FixedStepClock.cs
- create mode 100644 src/TermRacer.Core/Game.cs
- create mode 100644 src/TermRacer.Core/GameKey.cs
- create mode 100644 src/TermRacer.Core/GameScreen.cs
- create mode 100644 src/TermRacer.Core/Gate.cs
- create mode 100644 src/TermRacer.Core/Geometry.cs
- create mode 100644 src/TermRacer.Core/LapEvent.cs
- create mode 100644 src/TermRacer.Core/LapTracker.cs
- create mode 100644 src/TermRacer.Core/Pose.cs
- create mode 100644 src/TermRacer.Core/RaceMode.cs
- create mode 100644 src/TermRacer.Core/RacePhase.cs
- create mode 100644 src/TermRacer.Core/RaceSession.cs
- create mode 100644 src/TermRacer.Core/RacingLine.cs
- create mode 100644 src/TermRacer.Core/SpeedProfile.cs
- create mode 100644 src/TermRacer.Core/Surface.cs
- create mode 100644 src/TermRacer.Core/TermRacer.Core.csproj
- create mode 100644 src/TermRacer.Core/Track.cs
- create mode 100644 src/TermRacer.Core/TrackDefinition.cs
- create mode 100644 src/TermRacer.Core/TrackProjection.cs
- create mode 100644 src/TermRacer.Core/TrackSection.cs
- create mode 100644 src/TermRacer.Core/Vec2.cs
- create mode 100644 src/TermRacer.Core/Walls.cs
- create mode 100644 src/TermRacer.Rendering/Camera.cs
- create mode 100644 src/TermRacer.Rendering/Cell.cs
- create mode 100644 src/TermRacer.Rendering/CellBuffer.cs
- create mode 100644 src/TermRacer.Rendering/CellRun.cs
- create mode 100644 src/TermRacer.Rendering/ChaseCamera.cs
- create mode 100644 src/TermRacer.Rendering/FrameDiff.cs
- create mode 100644 src/TermRacer.Rendering/Hud.cs
- create mode 100644 src/TermRacer.Rendering/Palette.cs
- create mode 100644 src/TermRacer.Rendering/PixelCanvas.cs
- create mode 100644 src/TermRacer.Rendering/PixelFont.cs
- create mode 100644 src/TermRacer.Rendering/Rgb.cs
- create mode 100644 src/TermRacer.Rendering/SceneRenderer.cs
- create mode 100644 src/TermRacer.Rendering/TermRacer.Rendering.csproj
- create mode 100644 src/TermRacer.Rendering/TimeFormat.cs
- create mode 100644 src/TermRacer.Rendering/TrackGeometry.cs
- create mode 100644 src/TermRacer.Rendering/WorldPainter.cs
- create mode 100644 src/TermRacer.Rendering/WorldQuad.cs
- create mode 100644 src/TermRacer.Tui/GameView.cs
- create mode 100644 src/TermRacer.Tui/KeyMap.cs
- create mode 100644 src/TermRacer.Tui/Program.cs
- create mode 100644 src/TermRacer.Tui/TermRacer.Tui.csproj
- create mode 100644 src/TermRacer.Tui/TerminalColors.cs
- create mode 100644 tests/TermRacer.Core.Tests/AutopilotTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/CarPhysicsTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/DriverControlsTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/FixedStepClockTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/Fixtures.cs
- create mode 100644 tests/TermRacer.Core.Tests/GameTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/GeometryTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/LapTrackerTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/RacingLineTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/TermRacer.Core.Tests.csproj
- create mode 100644 tests/TermRacer.Core.Tests/TrackTests.cs
- create mode 100644 tests/TermRacer.Core.Tests/Vec2Tests.cs
- create mode 100644 tests/TermRacer.Core.Tests/WallsTests.cs
- create mode 100644 tests/TermRacer.Rendering.Tests/CameraTests.cs
- create mode 100644 tests/TermRacer.Rendering.Tests/CellBufferTests.cs
- create mode 100644 tests/TermRacer.Rendering.Tests/Fixtures.cs
- create mode 100644 tests/TermRacer.Rendering.Tests/FrameDiffTests.cs
- create mode 100644 tests/TermRacer.Rendering.Tests/PixelCanvasTests.cs
- create mode 100644 tests/TermRacer.Rendering.Tests/SceneRendererTests.cs
- create mode 100644 tests/TermRacer.Rendering.Tests/TermRacer.Rendering.Tests.csproj
- create mode 100644 tests/TermRacer.Rendering.Tests/TimeFormatTests.cs
-kushal@fedora:~/src/dotnet/TermRacer$ git status
-On branch main
-nothing to commit, working tree clean
-kushal@fedora:~/src/dotnet/TermRacer$ time dotnet build
-Restore complete (2.2s)
-  TermRacer.Core net10.0 succeeded (2.2s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
-  TermRacer.Rendering net10.0 succeeded (0.4s) → src/TermRacer.Rendering/bin/Debug/net10.0/TermRacer.Rendering.dll
-  TermRacer.Core.Tests net10.0 succeeded (0.6s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
-  TermRacer.Rendering.Tests net10.0 succeeded (0.4s) → tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll
-  TermRacer.Tui net10.0 succeeded (0.4s) → src/TermRacer.Tui/bin/Debug/net10.0/termracer.dll
+real	0m0.580s
+user	0m0.646s
+sys	0m0.130s
+Restore complete (0.5s)
+  TermRacer.Core net10.0 succeeded (0.3s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
+  TermRacer.Rendering net10.0 succeeded (0.3s) → src/TermRacer.Rendering/bin/Debug/net10.0/TermRacer.Rendering.dll
+  TermRacer.Core.Tests net10.0 succeeded (0.4s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
+  TermRacer.Tui net10.0 succeeded (0.3s) → src/TermRacer.Tui/bin/Debug/net10.0/termracer.dll
+  TermRacer.Rendering.Tests net10.0 succeeded (0.3s) → tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll
 
-Build succeeded in 5.3s
+Build succeeded in 1.6s
 
-real	0m5.576s
-user	0m4.414s
-sys	0m0.705s
-kushal@fedora:~/src/dotnet/TermRacer$ time dotnet test
+real	0m1.758s
+user	0m1.582s
+sys	0m0.357s
 Running tests from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
 Running tests from tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64)
-failed TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell (1s 006ms)
+failed TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell (1s 095ms)
   from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
   Assert.DoesNotContain() Failure: Sub-string found
            ↓ (pos 0)
@@ -147,25 +32,26 @@ failed TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell (
     at TermRacer.Rendering.Tests.SceneRendererTests.EveryScreenPaintsEveryCell() in tests/TermRacer.Rendering.Tests/SceneRendererTests.cs:29
     at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
     at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
-tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 382ms)
+tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 488ms)
 Exit code: 2
-tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 779ms)
+tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 992ms)
 
 Test run summary: Failed!
-  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 382ms)
-  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 779ms)
+  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (4s 992ms)
+  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) failed with 1 error(s) (2s 488ms)
 
   total: 92
   failed: 1
   succeeded: 91
   skipped: 0
-  duration: 4s 967ms
+  duration: 5s 183ms
 Test run completed with non-success exit code: 2 (see: https://aka.ms/testingplatform/exitcodes)
 
-real	0m6.093s
-user	0m10.121s
-sys	0m0.542s
-kushal@fedora:~/src/dotnet/TermRacer$ time bash export.sh 
+real	0m6.398s
+user	0m10.708s
+sys	0m0.571s
+On branch main
+nothing to commit, working tree clean
 Starting project export...
 Project Path: /home/kushal/src/dotnet/TermRacer
 Output File:  /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
@@ -257,7 +143,54 @@ Export completed successfully!
 Output file: /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
 Total source size: 0.13 MB across 81 files
 
-real	0m1.136s
+real	0m1.132s
 user	0m0.583s
-sys	0m0.735s
+sys	0m0.782s
+Restore complete (0.5s)
+
+Build succeeded in 0.6s
+Project 'TermRacer.Core' has the following package references
+   [net10.0]: No packages were found for this framework.
+Project 'TermRacer.Rendering' has the following package references
+   [net10.0]: No packages were found for this framework.
+Project 'TermRacer.Tui' has the following package references
+   [net10.0]: 
+   Top-level Package      Requested   Resolved
+   > Terminal.Gui         2.5.0       2.5.0   
+
+Project 'TermRacer.Core.Tests' has the following package references
+   [net10.0]: 
+   Top-level Package      Requested   Resolved
+   > xunit.v3             4.0.1       4.0.1   
+
+Project 'TermRacer.Rendering.Tests' has the following package references
+   [net10.0]: 
+   Top-level Package      Requested   Resolved
+   > xunit.v3             4.0.1       4.0.1   
+
+
+real	0m1.619s
+user	0m1.531s
+sys	0m0.415s
+Restore complete (0.5s)
+
+Build succeeded in 0.6s
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+
+The given project `TermRacer.Core` has no updates given the current sources.
+The given project `TermRacer.Rendering` has no updates given the current sources.
+The given project `TermRacer.Tui` has no updates given the current sources.
+The given project `TermRacer.Core.Tests` has no updates given the current sources.
+The given project `TermRacer.Rendering.Tests` has no updates given the current sources.
+
+real	0m3.206s
+user	0m2.305s
+sys	0m0.392s
+The provided file path does not exist: TermRacer.Tui.
+
+real	0m0.094s
+user	0m0.072s
+sys	0m0.022s
 kushal@fedora:~/src/dotnet/TermRacer$ 
