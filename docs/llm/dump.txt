@@ -1,12 +1,12 @@
 ===============================================================================
 PROJECT EXPORT
-Generated (UTC): 2026-10-01 22:29:31
+Generated (UTC): 2026-10-01 22:45:46
 Project Path:    /home/kushal/src/dotnet/TermRacer
-Git Commit:      245a2dad52b6738a2fb3ef5ab6b66a6d356c29a2
+Git Commit:      f2578f7d9aa7758e5856c90a5f50630cf2c1bbc9
 Git Branch:      main
 Git Dirty:       no
 .NET SDK:        10.0.112
-Files Exported:  81
+Files Exported:  82
 ===============================================================================
 
 DIRECTORY STRUCTURE (exported files only):
@@ -20,6 +20,9 @@ DIRECTORY STRUCTURE (exported files only):
     TermRacer.slnx
     docs/
         architecture.md
+        llm/
+            vendor/
+                claude-01.md
     export.sh
     global.json
     src/
@@ -163,10 +166,10 @@ MODIFIED: 2026-09-27 16:40:50 (UTC)
 
 ================================================================================
 FILE:     README.md
-SIZE:     2.12 KB (2168 bytes)
-LINES:    52
-SHA256:   d7c145c94c7e30901b0b0def69d67eb127aa9693bdf28e4f6ba6fd42140e76bf
-MODIFIED: 2026-09-27 16:49:12 (UTC)
+SIZE:     2.18 KB (2235 bytes)
+LINES:    54
+SHA256:   43b435cafa541fb1e71e40e83adcaf06b74754fab90b6af26a699c9fe6c73e33
+MODIFIED: 2026-10-01 22:39:12 (UTC)
 ================================================================================
 
 # TermRacer
@@ -221,6 +224,8 @@ docs/architecture.md
 ```
 
 Only `TermRacer.Tui` references Terminal.Gui. See `docs/architecture.md` for how the pieces fit.
+
+![a screenshot of the actual game play](docs/llm/vendor/play.png)
 
 
 ================================================================================
@@ -285,6 +290,23 @@ Three projects, one dependency direction: `Tui → Rendering → Core`. Core and
 
 - **Core tests** cover vector maths, segment intersection, track building and its invariants, physics limits, walls, lap rules (interpolated start, backward crossings, skipped checkpoints, Zen counting), control latching, the fixed-step clock, the racing line and speed profile, autopilot laps (clean laps, single-lap finish, recovery from facing backwards on grass) and game flow.
 - **Rendering tests** cover polygon coverage and tiling, half-block composition, frame diffs, cameras, time formatting and full-scene rendering on every screen.
+
+
+================================================================================
+FILE:     docs/llm/vendor/claude-01.md
+SIZE:     0.86 KB (877 bytes)
+LINES:    7
+SHA256:   1468e75ec5229472d4b37d56d41183e704abbcebf60abf88b6368c8bb342ca68
+MODIFIED: 2026-10-01 22:45:18 (UTC)
+================================================================================
+
+A few thoughts from trivially easy to probably impossible
+please implement them all to the best of your ability 
+1. a series of proper github actions files using the latest versions of actions etc and a full release not a pre release after each new push 
+2. a local text file that we write, read, maintain in the app itself and the file can live right alongside the binary but ideally we follow some xdg convention to keep track of lap times, include timestamps etc. there is no multiplayer support or online support, files only need to exist locally, there is no guarantee any backend will exist forever 
+3. a way to save previous laps how it was played etc, not sure how feasible this is 
+4. on the same note as 3, a "best lap" style ghost that we see on the track, this is the fastest lap so far 
+5. a way for the autopilot to get better and learn from previous iterations 
 
 
 ================================================================================
@@ -4862,9 +4884,9 @@ public sealed class TimeFormatTests
 
 
 ===============================================================================
-EXPORT COMPLETED (UTC): 2026-10-01 22:29:32
-Total Files Exported:   81
-Total Source Size:      0.13 MB (131163 bytes)
+EXPORT COMPLETED (UTC): 2026-10-01 22:45:47
+Total Files Exported:   82
+Total Source Size:      0.13 MB (132107 bytes)
 Output File:            /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
 ===============================================================================
-DUMP SHA256 (of all lines above this one): 0e377e587571990abd87a81850ec65ef8b7003646a07cf40b67531c60b911d42
+DUMP SHA256 (of all lines above this one): 44261088fa502663394c378dd7cf5a95e870fc46dc872e25f7657c70b8fe79b0
