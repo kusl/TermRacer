@@ -50,3 +50,5 @@ docs/architecture.md
 ```
 
 Only `TermRacer.Tui` references Terminal.Gui. See `docs/architecture.md` for how the pieces fit.
+
+![a screenshot of the actual game play](docs/llm/vendor/play.png)
