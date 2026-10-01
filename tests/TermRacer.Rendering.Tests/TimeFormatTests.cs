@@ -16,4 +16,14 @@ public sealed class TimeFormatTests
 
     [Fact]
     public void SpeedIsShownInKilometresPerHour() => Assert.Equal("144 km/h", TimeFormat.Speed(40));
+
+    [Theory]
+    [InlineData(1.2344, "+1.234")]
+    [InlineData(-0.5675, "-0.568")]
+    [InlineData(-0.0004, "+0.000")]
+    [InlineData(75.5, "+1:15.500")]
+    public void FormatsGaps(double seconds, string expected) => Assert.Equal(expected, TimeFormat.Gap(seconds));
+
+    [Fact]
+    public void MissingGapUsesPlaceholder() => Assert.Equal("-.---", TimeFormat.Gap(null));
 }

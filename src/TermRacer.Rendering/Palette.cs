@@ -21,4 +21,6 @@ public static class Palette
     public static readonly Rgb CheckerLight = Rgb.Hex(0xF4F4F2);
     public static readonly Rgb Cockpit = Rgb.Hex(0x1A2433);
     public static readonly Rgb MapTrack = Rgb.Hex(0xD9DEE3);
+    public static readonly Rgb Ghost = Rgb.Hex(0xE4F1FF);
+    public static readonly Rgb Ahead = Rgb.Hex(0x5CC27D);
 }

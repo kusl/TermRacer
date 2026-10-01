@@ -62,6 +62,16 @@ public sealed class PixelCanvasTests
     }
 
     [Fact]
+    public void BlendMixesTowardsTheColour()
+    {
+        var canvas = new PixelCanvas(4, 1);
+        canvas.Clear(Black);
+        canvas.BlendPolygon([new Vec2(0, 0), new Vec2(2, 0), new Vec2(2, 1), new Vec2(0, 1)], White, 0.25);
+        Assert.Equal(new Rgb(64, 64, 64), canvas[1, 0]);
+        Assert.Equal(Black, canvas[2, 0]);
+    }
+
+    [Fact]
     public void LinesReachBothEnds()
     {
         var canvas = new PixelCanvas(8, 8);

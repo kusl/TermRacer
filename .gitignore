@@ -4,3 +4,7 @@ TestResults/
 .vs/
 .idea/
 *.user
+publish/
+stage/
+dist/
+termracer-data/

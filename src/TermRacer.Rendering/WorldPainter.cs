@@ -48,7 +48,19 @@ public static class WorldPainter
         canvas.FillPolygon(cabin, autopilot ? Palette.Cream : Palette.Cockpit);
     }
 
-    public static void PaintMinimap(PixelCanvas canvas, int x, int y, int width, int height, TrackGeometry geometry, RaceSession race)
+    public static void PaintGhost(PixelCanvas canvas, Camera camera, in CarState car, CarSpec spec)
+    {
+        Span<Vec2> corners = stackalloc Vec2[Body.Length];
+        Shape(corners, Body, camera, car, spec, 1, Vec2.Zero);
+        canvas.BlendPolygon(corners, Palette.Ghost, 0.5);
+        Shape(corners, Nose, camera, car, spec, 1, Vec2.Zero);
+        canvas.BlendPolygon(corners, Palette.Orange, 0.35);
+        var cabin = corners[..Cabin.Length];
+        Shape(cabin, Cabin, camera, car, spec, 1, Vec2.Zero);
+        canvas.BlendPolygon(cabin, Palette.Cockpit, 0.3);
+    }
+
+    public static void PaintMinimap(PixelCanvas canvas, int x, int y, int width, int height, TrackGeometry geometry, Vec2 car, Vec2? ghost)
     {
         canvas.Darken(x, y, width, height, 0.35);
         var track = geometry.Track;
@@ -62,8 +74,14 @@ public static class WorldPainter
 
         var start = camera.ToPixel(track.Point(0)) + origin;
         canvas.Plot((int)Math.Floor(start.X), (int)Math.Floor(start.Y), Palette.Powder);
-        var car = camera.ToPixel(race.Car.Position) + origin;
-        canvas.FillRect((int)Math.Floor(car.X - 0.5), (int)Math.Floor(car.Y - 0.5), 2, 2, Palette.Orange);
+        if (ghost is { } other)
+        {
+            var mark = camera.ToPixel(other) + origin;
+            canvas.FillRect((int)Math.Floor(mark.X - 0.5), (int)Math.Floor(mark.Y - 0.5), 2, 2, Palette.Ghost);
+        }
+
+        var dot = camera.ToPixel(car) + origin;
+        canvas.FillRect((int)Math.Floor(dot.X - 0.5), (int)Math.Floor(dot.Y - 0.5), 2, 2, Palette.Orange);
     }
 
     private static void Paint(PixelCanvas canvas, Camera camera, WorldQuad[] quads, Rgb? color)

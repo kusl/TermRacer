@@ -2,10 +2,12 @@
   <Folder Name="/src/">
     <Project Path="src/TermRacer.Core/TermRacer.Core.csproj" />
     <Project Path="src/TermRacer.Rendering/TermRacer.Rendering.csproj" />
+    <Project Path="src/TermRacer.Storage/TermRacer.Storage.csproj" />
     <Project Path="src/TermRacer.Tui/TermRacer.Tui.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/TermRacer.Core.Tests/TermRacer.Core.Tests.csproj" />
     <Project Path="tests/TermRacer.Rendering.Tests/TermRacer.Rendering.Tests.csproj" />
+    <Project Path="tests/TermRacer.Storage.Tests/TermRacer.Storage.Tests.csproj" />
   </Folder>
 </Solution>

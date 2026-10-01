@@ -21,10 +21,10 @@ internal sealed class GameView : Runnable
     private CellBuffer back = new(0, 0);
     private bool fullRedraw = true;
 
-    public GameView(IApplication app, Game game)
+    public GameView(IApplication app, Game game, string version)
     {
         this.game = game;
-        renderer = new SceneRenderer(game.Track);
+        renderer = new SceneRenderer(game.Track) { Version = version };
         Title = "TermRacer";
         app.ScreenChanged += (_, _) => fullRedraw = true;
         if (app.Driver is { } driver)
@@ -78,7 +78,7 @@ internal sealed class GameView : Runnable
             return false;
         }
 
-        if (key.EventType == KeyEventType.Repeat && gameKey is GameKey.Confirm or GameKey.ToggleAutopilot)
+        if (key.EventType == KeyEventType.Repeat && gameKey is GameKey.Confirm or GameKey.ToggleAutopilot or GameKey.ToggleGhost or GameKey.Back)
         {
             return true;
         }

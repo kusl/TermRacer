@@ -75,6 +75,8 @@ public sealed class PixelCanvas(int width, int height)
 
     public void ShadePolygon(ReadOnlySpan<Vec2> vertices, double factor) => Rasterize(vertices, new ShadePainter(factor));
 
+    public void BlendPolygon(ReadOnlySpan<Vec2> vertices, Rgb color, double alpha) => Rasterize(vertices, new BlendPainter(color, alpha));
+
     public void DrawLine(Vec2 from, Vec2 to, Rgb color)
     {
         var delta = to - from;
@@ -196,6 +198,17 @@ public sealed class PixelCanvas(int width, int height)
     private readonly record struct SolidPainter(Rgb Color) : ISpanPainter
     {
         public void Paint(Span<Rgb> span) => span.Fill(Color);
+    }
+
+    private readonly record struct BlendPainter(Rgb Color, double Alpha) : ISpanPainter
+    {
+        public void Paint(Span<Rgb> span)
+        {
+            foreach (ref var pixel in span)
+            {
+                pixel = Rgb.Lerp(pixel, Color, Alpha);
+            }
+        }
     }
 
     private readonly record struct ShadePainter(double Factor) : ISpanPainter

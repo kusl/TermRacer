@@ -3,6 +3,8 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>termracer</AssemblyName>
     <RootNamespace>TermRacer.Tui</RootNamespace>
+    <Version>0.0.0-dev</Version>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Terminal.Gui" />
@@ -10,5 +12,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TermRacer.Core\TermRacer.Core.csproj" />
     <ProjectReference Include="..\TermRacer.Rendering\TermRacer.Rendering.csproj" />
+    <ProjectReference Include="..\TermRacer.Storage\TermRacer.Storage.csproj" />
   </ItemGroup>
 </Project>

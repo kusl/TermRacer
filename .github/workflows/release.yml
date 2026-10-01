@@ -1,0 +1,126 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  VERSION: 1.0.${{ github.run_number }}
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  test:
+    name: Test
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    name: Publish (${{ matrix.rid }})
+    needs: test
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - rid: linux-x64
+            os: ubuntu-latest
+          - rid: linux-arm64
+            os: ubuntu-latest
+          - rid: osx-x64
+            os: macos-latest
+          - rid: osx-arm64
+            os: macos-latest
+          - rid: win-x64
+            os: windows-latest
+          - rid: win-arm64
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Publish
+        shell: bash
+        run: >-
+          dotnet publish src/TermRacer.Tui/TermRacer.Tui.csproj
+          --configuration Release
+          --runtime ${{ matrix.rid }}
+          --self-contained
+          --output publish
+          -p:Version=${VERSION}
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -p:DebugType=none
+          -p:ContinuousIntegrationBuild=true
+
+      - name: Sign
+        if: runner.os == 'macOS'
+        run: codesign --force --sign - publish/termracer
+
+      - name: Package
+        shell: bash
+        run: |
+          name="termracer-${VERSION}-${{ matrix.rid }}"
+          mkdir -p "stage/${name}" dist
+          cp -R publish/. "stage/${name}/"
+          cp README.md "stage/${name}/"
+          if [[ "${{ matrix.rid }}" == win-* ]]; then
+            pwsh -NoProfile -Command "Compress-Archive -Path 'stage/${name}' -DestinationPath 'dist/${name}.zip'"
+          else
+            tar -czf "dist/${name}.tar.gz" -C stage "${name}"
+          fi
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: termracer-${{ matrix.rid }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    name: Release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: termracer-*
+          path: dist
+          merge-multiple: true
+
+      - name: Checksums
+        working-directory: dist
+        run: sha256sum termracer-* > SHA256SUMS.txt
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          tag="v${VERSION}"
+          tip="$(gh api "repos/${GH_REPO}/commits/${GITHUB_REF_NAME}" --jq .sha)"
+          latest=false
+          if [ "${tip}" = "${GITHUB_SHA}" ]; then
+            latest=true
+          fi
+          if gh release view "${tag}" > /dev/null 2>&1; then
+            gh release upload "${tag}" dist/* --clobber
+          else
+            gh release create "${tag}" dist/* \
+              --target "${GITHUB_SHA}" \
+              --title "TermRacer ${VERSION}" \
+              --notes "${HEAD_MESSAGE}" \
+              --generate-notes \
+              --latest="${latest}"
+          fi

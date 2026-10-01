@@ -8,5 +8,7 @@ public enum GameKey
     Right,
     Confirm,
     ToggleAutopilot,
+    ToggleGhost,
+    Back,
     Exit,
 }

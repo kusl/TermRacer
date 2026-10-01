@@ -14,6 +14,8 @@ internal static class KeyMap
         KeyCode.CursorRight or KeyCode.D => GameKey.Right,
         KeyCode.Enter or KeyCode.Space => GameKey.Confirm,
         KeyCode.Tab => GameKey.ToggleAutopilot,
+        KeyCode.G => GameKey.ToggleGhost,
+        KeyCode.Backspace => GameKey.Back,
         KeyCode.Esc => GameKey.Exit,
         _ => null,
     };
