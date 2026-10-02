@@ -1,46 +1,51 @@
 kushal@fedora:~/src/dotnet/TermRacer$ cd /home/kushal/src/dotnet/TermRacer; time dotnet format; time dotnet clean; time dotnet build; time dotnet test; git status; time bash export.sh; time dotnet list package; time dotnet list package --outdated; time dotnet run --project src/TermRacer.Tui/TermRacer.Tui.csproj
 
-real	0m5.679s
-user	0m9.038s
-sys	0m0.875s
+real	0m7.687s
+user	0m13.338s
+sys	0m1.199s
 
-Build succeeded in 0.4s
+Build succeeded in 0.5s
 
-real	0m0.557s
-user	0m0.619s
-sys	0m0.132s
+real	0m0.613s
+user	0m0.692s
+sys	0m0.170s
 Restore complete (0.5s)
-  TermRacer.Core net10.0 succeeded (2.1s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
-  TermRacer.Rendering net10.0 succeeded (0.3s) → src/TermRacer.Rendering/bin/Debug/net10.0/TermRacer.Rendering.dll
-  TermRacer.Core.Tests net10.0 succeeded (0.5s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
-  TermRacer.Rendering.Tests net10.0 succeeded (0.3s) → tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll
-  TermRacer.Tui net10.0 succeeded (0.3s) → src/TermRacer.Tui/bin/Debug/net10.0/termracer.dll
+  TermRacer.Core net10.0 succeeded (2.4s) → src/TermRacer.Core/bin/Debug/net10.0/TermRacer.Core.dll
+  TermRacer.Rendering net10.0 succeeded (0.4s) → src/TermRacer.Rendering/bin/Debug/net10.0/TermRacer.Rendering.dll
+  TermRacer.Storage net10.0 succeeded (0.3s) → src/TermRacer.Storage/bin/Debug/net10.0/TermRacer.Storage.dll
+  TermRacer.Core.Tests net10.0 succeeded (0.6s) → tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll
+  TermRacer.Storage.Tests net10.0 succeeded (0.4s) → tests/TermRacer.Storage.Tests/bin/Debug/net10.0/TermRacer.Storage.Tests.dll
+  TermRacer.Rendering.Tests net10.0 succeeded (0.4s) → tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll
+  TermRacer.Tui net10.0 succeeded (0.4s) → src/TermRacer.Tui/bin/Debug/net10.0/termracer.dll
 
-Build succeeded in 3.4s
+Build succeeded in 3.9s
 
-real	0m3.581s
-user	0m1.547s
-sys	0m0.351s
-Running tests from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
+real	0m4.082s
+user	0m1.950s
+sys	0m0.475s
+Running tests from tests/TermRacer.Storage.Tests/bin/Debug/net10.0/TermRacer.Storage.Tests.dll (net10.0|x64)
 Running tests from tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64)
-tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (2s 465ms)
-tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 101ms)
+Running tests from tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64)
+tests/TermRacer.Storage.Tests/bin/Debug/net10.0/TermRacer.Storage.Tests.dll (net10.0|x64) passed (841ms)
+tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (2s 235ms)
+tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (3s 188ms)
 
 Test run summary: Passed!
-  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (5s 101ms)
-  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (2s 465ms)
+  tests/TermRacer.Core.Tests/bin/Debug/net10.0/TermRacer.Core.Tests.dll (net10.0|x64) passed (2s 235ms)
+  tests/TermRacer.Storage.Tests/bin/Debug/net10.0/TermRacer.Storage.Tests.dll (net10.0|x64) passed (841ms)
+  tests/TermRacer.Rendering.Tests/bin/Debug/net10.0/TermRacer.Rendering.Tests.dll (net10.0|x64) passed (3s 188ms)
 
-  total: 92
+  total: 160
   failed: 0
-  succeeded: 92
+  succeeded: 160
   skipped: 0
-  duration: 5s 295ms
+  duration: 3s 448ms
 
-real	0m6.469s
-user	0m10.543s
-sys	0m0.568s
+real	0m4.812s
+user	0m13.035s
+sys	0m0.943s
 On branch main
-Your branch is ahead of 'origin/main' by 3 commits.
+Your branch is ahead of 'origin/main' by 1 commit.
   (use "git push" to publish your local commits)
 
 nothing to commit, working tree clean
@@ -48,103 +53,148 @@ Starting project export...
 Project Path: /home/kushal/src/dotnet/TermRacer
 Output File:  /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
 Listing files via git...
-Found 82 files to export
-Processing (1/82): .gitignore
-Processing (2/82): Directory.Build.props
-Processing (3/82): Directory.Packages.props
-Processing (4/82): README.md
-Processing (5/82): TermRacer.slnx
-Processing (6/82): docs/architecture.md
-Processing (7/82): docs/llm/vendor/claude-01.md
-Processing (8/82): export.sh
-Processing (9/82): global.json
-Processing (10/82): src/TermRacer.Core/Autopilot.cs
-Processing (11/82): src/TermRacer.Core/CarPhysics.cs
-Processing (12/82): src/TermRacer.Core/CarSpec.cs
-Processing (13/82): src/TermRacer.Core/CarState.cs
-Processing (14/82): src/TermRacer.Core/Circuits.cs
-Processing (15/82): src/TermRacer.Core/ControlInput.cs
-Processing (16/82): src/TermRacer.Core/DriveControl.cs
-Processing (17/82): src/TermRacer.Core/DriverControls.cs
-Processing (18/82): src/TermRacer.Core/FixedStepClock.cs
-Processing (19/82): src/TermRacer.Core/Game.cs
-Processing (20/82): src/TermRacer.Core/GameKey.cs
-Processing (21/82): src/TermRacer.Core/GameScreen.cs
-Processing (22/82): src/TermRacer.Core/Gate.cs
-Processing (23/82): src/TermRacer.Core/Geometry.cs
-Processing (24/82): src/TermRacer.Core/LapEvent.cs
-Processing (25/82): src/TermRacer.Core/LapTracker.cs
-Processing (26/82): src/TermRacer.Core/Pose.cs
-Processing (27/82): src/TermRacer.Core/RaceMode.cs
-Processing (28/82): src/TermRacer.Core/RacePhase.cs
-Processing (29/82): src/TermRacer.Core/RaceSession.cs
-Processing (30/82): src/TermRacer.Core/RacingLine.cs
-Processing (31/82): src/TermRacer.Core/SpeedProfile.cs
-Processing (32/82): src/TermRacer.Core/Surface.cs
-Processing (33/82): src/TermRacer.Core/TermRacer.Core.csproj
-Processing (34/82): src/TermRacer.Core/Track.cs
-Processing (35/82): src/TermRacer.Core/TrackDefinition.cs
-Processing (36/82): src/TermRacer.Core/TrackProjection.cs
-Processing (37/82): src/TermRacer.Core/TrackSection.cs
-Processing (38/82): src/TermRacer.Core/Vec2.cs
-Processing (39/82): src/TermRacer.Core/Walls.cs
-Processing (40/82): src/TermRacer.Rendering/Camera.cs
-Processing (41/82): src/TermRacer.Rendering/Cell.cs
-Processing (42/82): src/TermRacer.Rendering/CellBuffer.cs
-Processing (43/82): src/TermRacer.Rendering/CellRun.cs
-Processing (44/82): src/TermRacer.Rendering/ChaseCamera.cs
-Processing (45/82): src/TermRacer.Rendering/FrameDiff.cs
-Processing (46/82): src/TermRacer.Rendering/Hud.cs
-Processing (47/82): src/TermRacer.Rendering/Palette.cs
-Processing (48/82): src/TermRacer.Rendering/PixelCanvas.cs
-Processing (49/82): src/TermRacer.Rendering/PixelFont.cs
-Processing (50/82): src/TermRacer.Rendering/Rgb.cs
-Processing (51/82): src/TermRacer.Rendering/SceneRenderer.cs
-Processing (52/82): src/TermRacer.Rendering/TermRacer.Rendering.csproj
-Processing (53/82): src/TermRacer.Rendering/TimeFormat.cs
-Processing (54/82): src/TermRacer.Rendering/TrackGeometry.cs
-Processing (55/82): src/TermRacer.Rendering/WorldPainter.cs
-Processing (56/82): src/TermRacer.Rendering/WorldQuad.cs
-Processing (57/82): src/TermRacer.Tui/GameView.cs
-Processing (58/82): src/TermRacer.Tui/KeyMap.cs
-Processing (59/82): src/TermRacer.Tui/Program.cs
-Processing (60/82): src/TermRacer.Tui/TermRacer.Tui.csproj
-Processing (61/82): src/TermRacer.Tui/TerminalColors.cs
-Processing (62/82): tests/TermRacer.Core.Tests/AutopilotTests.cs
-Processing (63/82): tests/TermRacer.Core.Tests/CarPhysicsTests.cs
-Processing (64/82): tests/TermRacer.Core.Tests/DriverControlsTests.cs
-Processing (65/82): tests/TermRacer.Core.Tests/FixedStepClockTests.cs
-Processing (66/82): tests/TermRacer.Core.Tests/Fixtures.cs
-Processing (67/82): tests/TermRacer.Core.Tests/GameTests.cs
-Processing (68/82): tests/TermRacer.Core.Tests/GeometryTests.cs
-Processing (69/82): tests/TermRacer.Core.Tests/LapTrackerTests.cs
-Processing (70/82): tests/TermRacer.Core.Tests/RacingLineTests.cs
-Processing (71/82): tests/TermRacer.Core.Tests/TermRacer.Core.Tests.csproj
-Processing (72/82): tests/TermRacer.Core.Tests/TrackTests.cs
-Processing (73/82): tests/TermRacer.Core.Tests/Vec2Tests.cs
-Processing (74/82): tests/TermRacer.Core.Tests/WallsTests.cs
-Processing (75/82): tests/TermRacer.Rendering.Tests/CameraTests.cs
-Processing (76/82): tests/TermRacer.Rendering.Tests/CellBufferTests.cs
-Processing (77/82): tests/TermRacer.Rendering.Tests/Fixtures.cs
-Processing (78/82): tests/TermRacer.Rendering.Tests/FrameDiffTests.cs
-Processing (79/82): tests/TermRacer.Rendering.Tests/PixelCanvasTests.cs
-Processing (80/82): tests/TermRacer.Rendering.Tests/SceneRendererTests.cs
-Processing (81/82): tests/TermRacer.Rendering.Tests/TermRacer.Rendering.Tests.csproj
-Processing (82/82): tests/TermRacer.Rendering.Tests/TimeFormatTests.cs
+Found 125 files to export
+Processing (1/125): .github/dependabot.yml
+Processing (2/125): .github/workflows/ci.yml
+Processing (3/125): .github/workflows/release.yml
+Processing (4/125): .gitignore
+Processing (5/125): Directory.Build.props
+Processing (6/125): Directory.Packages.props
+Processing (7/125): README.md
+Processing (8/125): TermRacer.slnx
+Processing (9/125): docs/architecture.md
+Processing (10/125): docs/data-files.md
+Processing (11/125): docs/llm/vendor/claude-01.md
+Processing (12/125): export.sh
+Processing (13/125): global.json
+Processing (14/125): src/TermRacer.Core/Autopilot.cs
+Processing (15/125): src/TermRacer.Core/AutopilotModel.cs
+Processing (16/125): src/TermRacer.Core/AutopilotTrainer.cs
+Processing (17/125): src/TermRacer.Core/CarPhysics.cs
+Processing (18/125): src/TermRacer.Core/CarSpec.cs
+Processing (19/125): src/TermRacer.Core/CarState.cs
+Processing (20/125): src/TermRacer.Core/Circuits.cs
+Processing (21/125): src/TermRacer.Core/CompletedLap.cs
+Processing (22/125): src/TermRacer.Core/ControlInput.cs
+Processing (23/125): src/TermRacer.Core/Corner.cs
+Processing (24/125): src/TermRacer.Core/CornerFactor.cs
+Processing (25/125): src/TermRacer.Core/CornerMap.cs
+Processing (26/125): src/TermRacer.Core/DriveControl.cs
+Processing (27/125): src/TermRacer.Core/Driver.cs
+Processing (28/125): src/TermRacer.Core/DriverControls.cs
+Processing (29/125): src/TermRacer.Core/FixedStepClock.cs
+Processing (30/125): src/TermRacer.Core/Game.cs
+Processing (31/125): src/TermRacer.Core/GameKey.cs
+Processing (32/125): src/TermRacer.Core/GameScreen.cs
+Processing (33/125): src/TermRacer.Core/Gate.cs
+Processing (34/125): src/TermRacer.Core/Geometry.cs
+Processing (35/125): src/TermRacer.Core/IRecordStore.cs
+Processing (36/125): src/TermRacer.Core/LapEvent.cs
+Processing (37/125): src/TermRacer.Core/LapHistory.cs
+Processing (38/125): src/TermRacer.Core/LapRecord.cs
+Processing (39/125): src/TermRacer.Core/LapRecorder.cs
+Processing (40/125): src/TermRacer.Core/LapTracker.cs
+Processing (41/125): src/TermRacer.Core/MemoryRecordStore.cs
+Processing (42/125): src/TermRacer.Core/MenuEntry.cs
+Processing (43/125): src/TermRacer.Core/Pose.cs
+Processing (44/125): src/TermRacer.Core/RaceMode.cs
+Processing (45/125): src/TermRacer.Core/RacePhase.cs
+Processing (46/125): src/TermRacer.Core/RaceSession.cs
+Processing (47/125): src/TermRacer.Core/RacingLine.cs
+Processing (48/125): src/TermRacer.Core/Replay.cs
+Processing (49/125): src/TermRacer.Core/ReplayPlayer.cs
+Processing (50/125): src/TermRacer.Core/ReplaySample.cs
+Processing (51/125): src/TermRacer.Core/SpeedProfile.cs
+Processing (52/125): src/TermRacer.Core/Surface.cs
+Processing (53/125): src/TermRacer.Core/TelemetryFrame.cs
+Processing (54/125): src/TermRacer.Core/TermRacer.Core.csproj
+Processing (55/125): src/TermRacer.Core/Track.cs
+Processing (56/125): src/TermRacer.Core/TrackDefinition.cs
+Processing (57/125): src/TermRacer.Core/TrackProjection.cs
+Processing (58/125): src/TermRacer.Core/TrackSection.cs
+Processing (59/125): src/TermRacer.Core/Vec2.cs
+Processing (60/125): src/TermRacer.Core/Walls.cs
+Processing (61/125): src/TermRacer.Rendering/Camera.cs
+Processing (62/125): src/TermRacer.Rendering/Cell.cs
+Processing (63/125): src/TermRacer.Rendering/CellBuffer.cs
+Processing (64/125): src/TermRacer.Rendering/CellRun.cs
+Processing (65/125): src/TermRacer.Rendering/ChaseCamera.cs
+Processing (66/125): src/TermRacer.Rendering/FrameDiff.cs
+Processing (67/125): src/TermRacer.Rendering/Hud.cs
+Processing (68/125): src/TermRacer.Rendering/Palette.cs
+Processing (69/125): src/TermRacer.Rendering/PixelCanvas.cs
+Processing (70/125): src/TermRacer.Rendering/PixelFont.cs
+Processing (71/125): src/TermRacer.Rendering/Rgb.cs
+Processing (72/125): src/TermRacer.Rendering/SceneRenderer.cs
+Processing (73/125): src/TermRacer.Rendering/TermRacer.Rendering.csproj
+Processing (74/125): src/TermRacer.Rendering/TimeFormat.cs
+Processing (75/125): src/TermRacer.Rendering/TrackGeometry.cs
+Processing (76/125): src/TermRacer.Rendering/WorldPainter.cs
+Processing (77/125): src/TermRacer.Rendering/WorldQuad.cs
+Processing (78/125): src/TermRacer.Storage/AutopilotFormat.cs
+Processing (79/125): src/TermRacer.Storage/DataDirectory.cs
+Processing (80/125): src/TermRacer.Storage/DataLocation.cs
+Processing (81/125): src/TermRacer.Storage/DataSource.cs
+Processing (82/125): src/TermRacer.Storage/FileRecordStore.cs
+Processing (83/125): src/TermRacer.Storage/LapLog.cs
+Processing (84/125): src/TermRacer.Storage/LapLogFormat.cs
+Processing (85/125): src/TermRacer.Storage/ReplayFormat.cs
+Processing (86/125): src/TermRacer.Storage/TermRacer.Storage.csproj
+Processing (87/125): src/TermRacer.Storage/Tsv.cs
+Processing (88/125): src/TermRacer.Tui/GameView.cs
+Processing (89/125): src/TermRacer.Tui/KeyMap.cs
+Processing (90/125): src/TermRacer.Tui/Program.cs
+Processing (91/125): src/TermRacer.Tui/TermRacer.Tui.csproj
+Processing (92/125): src/TermRacer.Tui/TerminalColors.cs
+Processing (93/125): tests/TermRacer.Core.Tests/AutopilotTests.cs
+Processing (94/125): tests/TermRacer.Core.Tests/AutopilotTrainerTests.cs
+Processing (95/125): tests/TermRacer.Core.Tests/CarPhysicsTests.cs
+Processing (96/125): tests/TermRacer.Core.Tests/DriverControlsTests.cs
+Processing (97/125): tests/TermRacer.Core.Tests/FixedStepClockTests.cs
+Processing (98/125): tests/TermRacer.Core.Tests/Fixtures.cs
+Processing (99/125): tests/TermRacer.Core.Tests/GameTests.cs
+Processing (100/125): tests/TermRacer.Core.Tests/GeometryTests.cs
+Processing (101/125): tests/TermRacer.Core.Tests/LapHistoryTests.cs
+Processing (102/125): tests/TermRacer.Core.Tests/LapTrackerTests.cs
+Processing (103/125): tests/TermRacer.Core.Tests/RacingLineTests.cs
+Processing (104/125): tests/TermRacer.Core.Tests/ReplayTests.cs
+Processing (105/125): tests/TermRacer.Core.Tests/TermRacer.Core.Tests.csproj
+Processing (106/125): tests/TermRacer.Core.Tests/TrackIdTests.cs
+Processing (107/125): tests/TermRacer.Core.Tests/TrackTests.cs
+Processing (108/125): tests/TermRacer.Core.Tests/Vec2Tests.cs
+Processing (109/125): tests/TermRacer.Core.Tests/WallsTests.cs
+Processing (110/125): tests/TermRacer.Rendering.Tests/CameraTests.cs
+Processing (111/125): tests/TermRacer.Rendering.Tests/CellBufferTests.cs
+Processing (112/125): tests/TermRacer.Rendering.Tests/Fixtures.cs
+Processing (113/125): tests/TermRacer.Rendering.Tests/FrameDiffTests.cs
+Processing (114/125): tests/TermRacer.Rendering.Tests/PixelCanvasTests.cs
+Processing (115/125): tests/TermRacer.Rendering.Tests/SceneRendererTests.cs
+Processing (116/125): tests/TermRacer.Rendering.Tests/TermRacer.Rendering.Tests.csproj
+Processing (117/125): tests/TermRacer.Rendering.Tests/TimeFormatTests.cs
+Processing (118/125): tests/TermRacer.Storage.Tests/AutopilotFormatTests.cs
+Processing (119/125): tests/TermRacer.Storage.Tests/DataDirectoryTests.cs
+Processing (120/125): tests/TermRacer.Storage.Tests/FileRecordStoreTests.cs
+Processing (121/125): tests/TermRacer.Storage.Tests/Fixtures.cs
+Processing (122/125): tests/TermRacer.Storage.Tests/LapLogFormatTests.cs
+Processing (123/125): tests/TermRacer.Storage.Tests/ReplayFormatTests.cs
+Processing (124/125): tests/TermRacer.Storage.Tests/TemporaryDirectory.cs
+Processing (125/125): tests/TermRacer.Storage.Tests/TermRacer.Storage.Tests.csproj
 
 Export completed successfully!
 Output file: /home/kushal/src/dotnet/TermRacer/docs/llm/dump.txt
-Total source size: 0.13 MB across 82 files
+Total source size: 0.26 MB across 125 files
 
-real	0m1.140s
-user	0m0.584s
-sys	0m0.787s
-Restore complete (0.4s)
+real	0m1.740s
+user	0m0.858s
+sys	0m1.226s
+Restore complete (0.5s)
 
-Build succeeded in 0.5s
+Build succeeded in 0.6s
 Project 'TermRacer.Core' has the following package references
    [net10.0]: No packages were found for this framework.
 Project 'TermRacer.Rendering' has the following package references
+   [net10.0]: No packages were found for this framework.
+Project 'TermRacer.Storage' has the following package references
    [net10.0]: No packages were found for this framework.
 Project 'TermRacer.Tui' has the following package references
    [net10.0]: 
@@ -161,28 +211,35 @@ Project 'TermRacer.Rendering.Tests' has the following package references
    Top-level Package      Requested   Resolved
    > xunit.v3             4.0.1       4.0.1   
 
+Project 'TermRacer.Storage.Tests' has the following package references
+   [net10.0]: 
+   Top-level Package      Requested   Resolved
+   > xunit.v3             4.0.1       4.0.1   
 
-real	0m1.469s
-user	0m1.491s
-sys	0m0.362s
-Restore complete (0.4s)
 
-Build succeeded in 0.5s
+real	0m1.808s
+user	0m1.791s
+sys	0m0.476s
+Restore complete (0.5s)
+
+Build succeeded in 0.6s
 
 The following sources were used:
    https://api.nuget.org/v3/index.json
 
 The given project `TermRacer.Core` has no updates given the current sources.
 The given project `TermRacer.Rendering` has no updates given the current sources.
+The given project `TermRacer.Storage` has no updates given the current sources.
 The given project `TermRacer.Tui` has no updates given the current sources.
 The given project `TermRacer.Core.Tests` has no updates given the current sources.
 The given project `TermRacer.Rendering.Tests` has no updates given the current sources.
+The given project `TermRacer.Storage.Tests` has no updates given the current sources.
 
-real	0m1.843s
-user	0m1.711s
-sys	0m0.385s
+real	0m3.692s
+user	0m2.579s
+sys	0m0.472s
 
-real	0m5.662s
-user	0m3.382s
-sys	0m0.376s
+real	30m17.460s
+user	6m32.816s
+sys	1m5.647s
 kushal@fedora:~/src/dotnet/TermRacer$ 
